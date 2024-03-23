@@ -71,6 +71,8 @@ func (s *ServerChi) Run() (err error) {
 
 	// - products
 	buildProductsRouter(router, db)
+	// - sellers
+	buildSellersRouter(router, db)
 
 	// run
 	err = http.ListenAndServe(s.addr, router)
@@ -86,6 +88,24 @@ func buildProductsRouter(router *chi.Mux, db *sql.DB) {
 
 	// define the routes of the products
 	router.Route("/api/v1/products", func(r chi.Router) {
+		// endpoints
+		r.Post("/", hd.Create())
+		r.Get("/", hd.GetAll())
+		r.Get("/{id}", hd.GetByID())
+		r.Patch("/{id}", hd.Update())
+		r.Delete("/{id}", hd.Delete())
+	})
+}
+
+// *buildSellersRouter builds the router for the sellers endpoints
+func buildSellersRouter(router *chi.Mux, db *sql.DB) {
+	// instance dependences
+	rp := repository.NewSellerMySQL(db)
+	sv := service.NewSellerDefault(rp)
+	hd := handler.NewSellerDefault(sv)
+
+	// define the routes of the sellers
+	router.Route("/api/v1/sellers", func(r chi.Router) {
 		// endpoints
 		r.Post("/", hd.Create())
 		r.Get("/", hd.GetAll())

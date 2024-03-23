@@ -27,7 +27,7 @@ type ProductRepository interface {
 	// Get returns the product with the given id.
 	Get(id int) (Product, error)
 	// Save saves the product in the storage.
-	Save(p *Product) (int64, error)
+	Save(p *Product) (int, error)
 	// Update updates the product in the storage.
 	Update(p *Product) error
 	// Delete deletes the product with the given id from the storage.

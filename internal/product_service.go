@@ -18,6 +18,8 @@ var (
 	ErrProductServuceInvalidContent = errors.New("products service: invalid content")
 	// ErrProductServiceNothingToUpdate is returned when there is nothing to update.
 	ErrProductServiceNothingToUpdate = errors.New("products service: nothing to update")
+
+	ErrProductServiceForeignKey = errors.New("products service: product couldn't be deleted because foreign key constraint")
 )
 
 type ProductService interface {

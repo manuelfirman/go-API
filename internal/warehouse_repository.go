@@ -17,12 +17,12 @@ var (
 
 // WarehouseRepository is an interface that contains the methods that the warehouse repository should support
 type WarehouseRepository interface {
-	// FindAll returns all the warehouses
-	FindAll() ([]Warehouse, error)
-	// FindByID returns the warehouse with the given ID
-	FindByID(id int) (Warehouse, error)
+	// GetAll returns all the warehouses
+	GetAll() ([]Warehouse, error)
+	// Get returns the warehouse with the given ID
+	Get(id int) (Warehouse, error)
 	// Save saves the given warehouse
-	Save(warehouse *Warehouse) error
+	Save(warehouse *Warehouse) (int, error)
 	// Update updates the given warehouse
 	Update(warehouse *Warehouse) error
 	// Delete deletes the warehouse with the given ID

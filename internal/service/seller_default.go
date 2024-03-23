@@ -22,8 +22,6 @@ func (s *SellerDefault) GetAll() (products []internal.Seller, err error) {
 		switch err {
 		case internal.ErrSellerRepositoryNotFound:
 			err = internal.ErrSellerServiceNotFound
-		case internal.ErrSellerRepositoryTransaction, internal.ErrSellerRepositoryConn:
-			err = internal.ErrSellerServiceDB
 		default:
 			err = internal.ErrSellerServiceUnknown
 		}
@@ -40,8 +38,6 @@ func (s *SellerDefault) Get(id int) (p internal.Seller, err error) {
 		switch err {
 		case internal.ErrSellerRepositoryNotFound:
 			err = internal.ErrSellerServiceNotFound
-		case internal.ErrSellerRepositoryTransaction, internal.ErrSellerRepositoryConn:
-			err = internal.ErrSellerServiceDB
 		default:
 			err = internal.ErrSellerServiceUnknown
 		}
@@ -60,8 +56,6 @@ func (s *SellerDefault) Save(sell *internal.Seller) (seller internal.Seller, err
 			err = internal.ErrSellerServiceDuplicated
 		case internal.ErrSellerRepositoryLocalityIdNotFound:
 			err = internal.ErrSellerServiceForeignKey
-		case internal.ErrSellerRepositoryTransaction, internal.ErrSellerRepositoryConn:
-			err = internal.ErrSellerServiceDB
 		default:
 			err = internal.ErrSellerServiceUnknown
 		}
@@ -82,8 +76,6 @@ func (s *SellerDefault) Update(p *internal.Seller) (err error) {
 			err = internal.ErrSellerServiceNotFound
 		case internal.ErrSellerRepositoryNothingToUpdate:
 			err = internal.ErrSellerServiceNothingToUpdate
-		case internal.ErrSellerRepositoryTransaction, internal.ErrSellerRepositoryConn:
-			err = internal.ErrSellerServiceDB
 		default:
 			err = internal.ErrSellerServiceUnknown
 		}
@@ -100,8 +92,6 @@ func (s *SellerDefault) Delete(id int) (err error) {
 		switch err {
 		case internal.ErrSellerRepositoryNotFound:
 			err = internal.ErrSellerServiceNotFound
-		case internal.ErrSellerRepositoryTransaction, internal.ErrSellerRepositoryConn:
-			err = internal.ErrSellerServiceDB
 		default:
 			err = internal.ErrSellerServiceUnknown
 		}

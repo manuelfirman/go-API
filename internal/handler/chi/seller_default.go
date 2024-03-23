@@ -77,8 +77,6 @@ func (h *SellerDefault) GetAll() http.HandlerFunc {
 			switch {
 			case errors.Is(err, internal.ErrSellerServiceNotFound):
 				response.Error(w, http.StatusNotFound, "sellers not found")
-			case errors.Is(err, internal.ErrSellerServiceDB):
-				response.Error(w, http.StatusInternalServerError, "database error")
 			default:
 				response.Error(w, http.StatusInternalServerError, "unknown error")
 			}
@@ -117,8 +115,6 @@ func (h *SellerDefault) GetByID() http.HandlerFunc {
 			switch {
 			case errors.Is(err, internal.ErrSellerServiceNotFound):
 				response.Error(w, http.StatusNotFound, "seller not found")
-			case errors.Is(err, internal.ErrSellerServiceDB):
-				response.Error(w, http.StatusInternalServerError, "database error")
 			default:
 				response.Error(w, http.StatusInternalServerError, "unknown error")
 			}
@@ -196,8 +192,6 @@ func (h *SellerDefault) Create() http.HandlerFunc {
 				response.Error(w, http.StatusConflict, "seller already exists")
 			case errors.Is(err, internal.ErrSellerServiceForeignKey):
 				response.Error(w, http.StatusConflict, "foreign key error")
-			case errors.Is(err, internal.ErrSellerServiceDB):
-				response.Error(w, http.StatusInternalServerError, "database error")
 			default:
 				response.Error(w, http.StatusInternalServerError, "unknown error")
 			}
@@ -234,8 +228,6 @@ func (h *SellerDefault) Update() http.HandlerFunc {
 			switch {
 			case errors.Is(err, internal.ErrSellerServiceNotFound):
 				response.Error(w, http.StatusNotFound, "seller not found")
-			case errors.Is(err, internal.ErrSellerServiceDB):
-				response.Error(w, http.StatusInternalServerError, "database error")
 			default:
 				response.Error(w, http.StatusInternalServerError, "unknown error")
 			}
@@ -269,8 +261,6 @@ func (h *SellerDefault) Update() http.HandlerFunc {
 				response.Error(w, http.StatusConflict, "seller already exists")
 			case errors.Is(err, internal.ErrSellerServiceNotFound):
 				response.Error(w, http.StatusNotFound, "seller not found")
-			case errors.Is(err, internal.ErrSellerServiceDB):
-				response.Error(w, http.StatusInternalServerError, "database error")
 			default:
 				response.Error(w, http.StatusInternalServerError, "unknown error")
 			}
@@ -305,8 +295,6 @@ func (h *SellerDefault) Delete() http.HandlerFunc {
 			switch {
 			case errors.Is(err, internal.ErrSellerServiceNotFound):
 				response.Error(w, http.StatusNotFound, "seller not found")
-			case errors.Is(err, internal.ErrSellerServiceDB):
-				response.Error(w, http.StatusInternalServerError, "database error")
 			default:
 				response.Error(w, http.StatusInternalServerError, "unknown error")
 			}

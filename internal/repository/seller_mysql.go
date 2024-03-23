@@ -37,10 +37,6 @@ func (r *SellerMySQL) GetAll() (sellers []internal.Seller, err error) {
 			switch err {
 			case sql.ErrNoRows:
 				err = internal.ErrSellerRepositoryNotFound
-			case sql.ErrTxDone:
-				err = internal.ErrSellerRepositoryTransaction
-			case sql.ErrConnDone:
-				err = internal.ErrSellerRepositoryConn
 			default:
 				err = internal.ErrSellerRepositoryUnknown
 			}
@@ -64,10 +60,6 @@ func (r *SellerMySQL) Get(id int) (s internal.Seller, err error) {
 		switch {
 		case errors.Is(err, sql.ErrNoRows):
 			err = internal.ErrSellerRepositoryNotFound
-		case errors.Is(err, sql.ErrTxDone):
-			err = internal.ErrSellerRepositoryTransaction
-		case errors.Is(err, sql.ErrConnDone):
-			err = internal.ErrSellerRepositoryConn
 		default:
 			err = internal.ErrSellerRepositoryUnknown
 		}
@@ -158,10 +150,6 @@ func (r *SellerMySQL) Delete(id int) (err error) {
 		switch {
 		case errors.Is(err, sql.ErrNoRows):
 			err = internal.ErrSellerRepositoryNotFound
-		case errors.Is(err, sql.ErrTxDone):
-			err = internal.ErrSellerRepositoryTransaction
-		case errors.Is(err, sql.ErrConnDone):
-			err = internal.ErrSellerRepositoryConn
 		default:
 			err = internal.ErrSellerRepositoryUnknown
 		}

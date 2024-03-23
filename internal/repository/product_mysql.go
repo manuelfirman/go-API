@@ -51,17 +51,13 @@ func (r *repository) Get(id int) (p internal.Product, err error) {
 		switch {
 		case errors.Is(err, sql.ErrNoRows):
 			err = internal.ErrProductRepositoryNotFound
-		case errors.Is(err, sql.ErrTxDone):
-			err = internal.ErrProductRepositoryTransaction
-		case errors.Is(err, sql.ErrConnDone):
-			err = internal.ErrProductRepositoryConn
 		default:
 			err = internal.ErrProductRepositoryUnknown
 		}
 		return
 	}
 
-	return p, nil
+	return
 }
 
 // Save receives a product and saves it. It returns the ID of the product saved.
@@ -89,15 +85,7 @@ func (r *repository) Save(p *internal.Product) (id int, err error) {
 	var id64 int64
 	id64, err = result.LastInsertId()
 	if err != nil {
-		switch {
-		case errors.Is(err, sql.ErrTxDone):
-			err = internal.ErrProductRepositoryTransaction
-		case errors.Is(err, sql.ErrConnDone):
-			err = internal.ErrProductRepositoryConn
-		default:
-			err = internal.ErrProductRepositoryUnknown
-		}
-		return 0, err
+		return
 	}
 
 	id = int(id64)

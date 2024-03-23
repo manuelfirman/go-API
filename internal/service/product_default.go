@@ -22,12 +22,9 @@ func (s *ProductDefault) GetAll() (products []internal.Product, err error) {
 		switch err {
 		case internal.ErrProductRepositoryNotFound:
 			err = internal.ErrProductServiceNotFound
-		case internal.ErrProductRepositoryTransaction, internal.ErrProductRepositoryConn:
-			err = internal.ErrProductServiceDBError
 		default:
 			err = internal.ErrProductServiceUnkown
 		}
-
 		return
 	}
 
@@ -42,12 +39,9 @@ func (s *ProductDefault) Get(id int) (p internal.Product, err error) {
 		switch err {
 		case internal.ErrProductRepositoryNotFound:
 			err = internal.ErrProductServiceNotFound
-		case internal.ErrProductRepositoryTransaction, internal.ErrProductRepositoryConn:
-			err = internal.ErrProductServiceDBError
 		default:
 			err = internal.ErrProductServiceUnkown
 		}
-
 		return
 	}
 
@@ -61,14 +55,11 @@ func (s *ProductDefault) Save(p *internal.Product) (prod internal.Product, err e
 		switch err {
 		case internal.ErrProductRepositoryDuplicated:
 			err = internal.ErrProductServiceDuplicated
-		case internal.ErrProductRepositoryTransaction, internal.ErrProductRepositoryConn:
-			err = internal.ErrProductServiceDBError
 		case internal.ErrSellerRepositoryNotFound:
 			err = internal.ErrSellerServiceNotFound
 		default:
 			err = internal.ErrProductServiceUnkown
 		}
-
 		return
 	}
 
@@ -87,8 +78,6 @@ func (s *ProductDefault) Update(p *internal.Product) (err error) {
 			err = internal.ErrProductServiceNotFound
 		case internal.ErrProductRepositoryDuplicated:
 			err = internal.ErrProductServiceDuplicated
-		case internal.ErrProductRepositoryTransaction, internal.ErrProductRepositoryConn:
-			err = internal.ErrProductServiceDBError
 		case internal.ErrProductRepositoryNothingToUpdate:
 			err = internal.ErrProductServiceNothingToUpdate
 		default:
@@ -108,8 +97,6 @@ func (s *ProductDefault) Delete(id int) (err error) {
 		switch err {
 		case internal.ErrProductRepositoryNotFound:
 			err = internal.ErrProductServiceNotFound
-		case internal.ErrProductRepositoryTransaction, internal.ErrProductRepositoryConn:
-			err = internal.ErrProductServiceDBError
 		case internal.ErrProductRepositoryForeignKey:
 			err = internal.ErrProductServiceForeignKey
 		default:

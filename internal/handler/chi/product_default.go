@@ -108,8 +108,6 @@ func (h *ProductDefault) GetAll() http.HandlerFunc {
 			switch {
 			case errors.Is(err, internal.ErrProductServiceNotFound):
 				response.Error(w, http.StatusNotFound, "products not found")
-			case errors.Is(err, internal.ErrProductServiceDBError):
-				response.Error(w, http.StatusInternalServerError, "database error")
 			default:
 				response.Error(w, http.StatusInternalServerError, "unknown error")
 			}
@@ -151,8 +149,6 @@ func (h *ProductDefault) GetByID() http.HandlerFunc {
 			switch {
 			case errors.Is(err, internal.ErrProductServiceNotFound):
 				response.Error(w, http.StatusNotFound, "product not found")
-			case errors.Is(err, internal.ErrProductServiceDBError):
-				response.Error(w, http.StatusInternalServerError, "database error")
 			default:
 				response.Error(w, http.StatusInternalServerError, "unknown error")
 			}
@@ -271,8 +267,6 @@ func (h *ProductDefault) Update() http.HandlerFunc {
 			switch {
 			case errors.Is(err, internal.ErrProductServiceNotFound):
 				response.Error(w, http.StatusNotFound, "product not found")
-			case errors.Is(err, internal.ErrProductServiceDBError):
-				response.Error(w, http.StatusInternalServerError, "database error")
 			default:
 				response.Error(w, http.StatusInternalServerError, "unknown error")
 			}
@@ -306,8 +300,6 @@ func (h *ProductDefault) Update() http.HandlerFunc {
 				response.Error(w, http.StatusNotFound, "product not found")
 			case errors.Is(err, internal.ErrProductServiceDuplicated):
 				response.Error(w, http.StatusConflict, "duplicated product code")
-			case errors.Is(err, internal.ErrProductServiceDBError):
-				response.Error(w, http.StatusInternalServerError, "database error")
 			case errors.Is(err, internal.ErrProductServiceNothingToUpdate):
 				response.Error(w, http.StatusConflict, "nothing to update")
 			default:
@@ -349,8 +341,6 @@ func (h *ProductDefault) Delete() http.HandlerFunc {
 				response.Error(w, http.StatusNotFound, "product not found")
 			case errors.Is(err, internal.ErrProductServiceForeignKey):
 				response.Error(w, http.StatusConflict, "product has dependencies")
-			case errors.Is(err, internal.ErrProductServiceDBError):
-				response.Error(w, http.StatusInternalServerError, "database error")
 			default:
 				response.Error(w, http.StatusInternalServerError, "unknown error")
 			}

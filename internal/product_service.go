@@ -5,17 +5,19 @@ import "errors"
 // Errors
 var (
 	// ErrServiceNotFound is returned when a product is not found.
-	ErrProductServiceNotFound = errors.New("service: product not found")
+	ErrProductServiceNotFound = errors.New("products service: product not found")
 	// ErrServiceDBError is returned when a database connection or transaction error occurs.
-	ErrProductServiceDBError = errors.New("service: database error")
+	ErrProductServiceDBError = errors.New("products service: database error")
 	// ErrServiceUnkown is returned when an unknown error occurs.
-	ErrProductServiceUnkown = errors.New("service: unknown error")
+	ErrProductServiceUnkown = errors.New("products service: unknown error")
 	// ErrServiceProductCodeInUse is returned when a product's code is already in use.
-	ErrProductServiceDuplicated = errors.New("service: product code already in use")
+	ErrProductServiceDuplicated = errors.New("products service: product code already in use")
 	// ErrServiceInconsistentData is returned when a map's type is not consistent with the domain
-	ErrProductServiceInconsistentData = errors.New("service: inconsistent data")
+	ErrProductServiceInconsistentData = errors.New("products service: inconsistent data")
 	// ErrInvalidContent is returned when the content is invalid
-	ErrProductInvalidContent = errors.New("service: invalid content")
+	ErrProductServuceInvalidContent = errors.New("products service: invalid content")
+	// ErrProductServiceNothingToUpdate is returned when there is nothing to update.
+	ErrProductServiceNothingToUpdate = errors.New("products service: nothing to update")
 )
 
 type ProductService interface {

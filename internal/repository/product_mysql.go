@@ -3,6 +3,7 @@ package repository
 import (
 	"database/sql"
 	"errors"
+	"fmt"
 
 	"github.com/go-sql-driver/mysql"
 	"github.com/manuelfirman/go-API/internal"
@@ -74,7 +75,8 @@ func (r *repository) Save(p *internal.Product) (id int, err error) {
 		if errors.As(err, &mysqlErr) {
 			switch mysqlErr.Number {
 			case 1062:
-				err = internal.ErrProductRepositoryNotFound
+				fmt.Println(err)
+				err = internal.ErrProductRepositoryDuplicated
 			case 1452:
 				err = internal.ErrSellerRepositoryNotFound
 			default:
@@ -106,15 +108,20 @@ func (r *repository) Save(p *internal.Product) (id int, err error) {
 // Update receives a product and updates it. Returns an error if the product is not found.
 func (r *repository) Update(p *internal.Product) (err error) {
 	// execute the query
-	query := "UPDATE `products` SET `product_code` = ?, description` = ?, `height` = ?, `length` = ?, `width` = ?, `weight` = ?, `expiration_rate` = ?, `freezing_rate` = ?, `recom_freez_temp` = ?, `product_type_id` = ?, `seller_id` = ? WHERE `id` = ?"
+	query := "UPDATE `products` SET `product_code` = ?, `description` = ?, `height` = ?, `length` = ?, `width` = ?, `weight` = ?, `expiration_rate` = ?, `freezing_rate` = ?, `recom_freez_temp` = ?, `product_type_id` = ?, `seller_id` = ? WHERE `id` = ?"
 	result, err := r.db.Exec(query, (*p).ProductCode, (*p).Description, (*p).Height, (*p).Length, (*p).Width, (*p).Weight, (*p).ExpirationRate, (*p).FreezingRate, (*p).RecomFreezTemp, (*p).ProductTypeID, (*p).SellerID, (*p).ID)
 
 	if err != nil {
 		var mysqlErr *mysql.MySQLError
 		if errors.As(err, &mysqlErr) {
+			println(err.Error())
 			switch mysqlErr.Number {
 			case 1062:
 				err = internal.ErrProductRepositoryDuplicated
+			case 1452:
+				err = internal.ErrSellerRepositoryNotFound
+			default:
+				err = internal.ErrProductRepositoryUnknown
 			}
 		}
 		return

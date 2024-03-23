@@ -85,6 +85,8 @@ func (s *ProductDefault) Update(p *internal.Product) (err error) {
 		switch err {
 		case internal.ErrProductRepositoryNotFound:
 			err = internal.ErrProductServiceNotFound
+		case internal.ErrProductRepositoryDuplicated:
+			err = internal.ErrProductServiceDuplicated
 		case internal.ErrProductRepositoryTransaction, internal.ErrProductRepositoryConn:
 			err = internal.ErrProductServiceDBError
 		case internal.ErrProductRepositoryNothingToUpdate:

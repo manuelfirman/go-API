@@ -74,9 +74,9 @@ func (wd *WarehouseDefault) GetAll() http.HandlerFunc {
 		if err != nil {
 			switch err {
 			case internal.ErrWarehouseServiceNotFound:
-				http.Error(w, "Warehouse not found", http.StatusNotFound)
+				response.Error(w, http.StatusNotFound, "warehouse not found")
 			default:
-				http.Error(w, "Unknown error", http.StatusInternalServerError)
+				response.Error(w, http.StatusInternalServerError, "unknown error")
 			}
 			return
 		}
@@ -111,9 +111,9 @@ func (wd *WarehouseDefault) Get() http.HandlerFunc {
 		if err != nil {
 			switch err {
 			case internal.ErrWarehouseServiceNotFound:
-				http.Error(w, "Warehouse not found", http.StatusNotFound)
+				response.Error(w, http.StatusNotFound, "warehouse not found")
 			default:
-				http.Error(w, "Unknown error", http.StatusInternalServerError)
+				response.Error(w, http.StatusInternalServerError, "unknown error")
 			}
 			return
 		}
@@ -156,7 +156,7 @@ func (wd *WarehouseDefault) Save() http.HandlerFunc {
 			return
 		}
 
-		// - unmarshal the body to a sellerRequest struct for further processing
+		// - unmarshal the body to a warehouseRequest struct for further processing
 		err = json.Unmarshal(body, &warehouseRequest)
 		if err != nil {
 			response.Error(w, http.StatusBadRequest, "invalid body")
@@ -164,7 +164,7 @@ func (wd *WarehouseDefault) Save() http.HandlerFunc {
 		}
 
 		// process
-		// - create a sellerJSON
+		// - create a warehouseJSON
 		warehouseJSON := WarehouseJSON{
 			WarehouseCode:      warehouseRequest.WarehouseCode,
 			Address:            warehouseRequest.Address,
@@ -174,7 +174,7 @@ func (wd *WarehouseDefault) Save() http.HandlerFunc {
 			LocalityId:         warehouseRequest.LocalityId,
 		}
 
-		// - deserialize the sellerJSON
+		// - deserialize the warehouseSON
 		wh := serializeWarehouse(warehouseJSON)
 		err = validateWarehouseFields(&wh)
 		if err != nil {
@@ -182,13 +182,13 @@ func (wd *WarehouseDefault) Save() http.HandlerFunc {
 			return
 		}
 
-		// - save the seller
+		// - save the warehouse
 		wh, err = wd.sv.Save(&wh)
 		if err != nil {
 			switch {
-			case errors.Is(err, internal.ErrSellerServiceDuplicated):
-				response.Error(w, http.StatusConflict, "seller already exists")
-			case errors.Is(err, internal.ErrSellerServiceForeignKey):
+			case errors.Is(err, internal.ErrWarehouseServiceDuplicated):
+				response.Error(w, http.StatusConflict, "warehouse already exists")
+			case errors.Is(err, internal.ErrWarehouseServiceForeignKey):
 				response.Error(w, http.StatusConflict, "foreign key error")
 			default:
 				response.Error(w, http.StatusInternalServerError, "unknown error")
@@ -197,10 +197,10 @@ func (wd *WarehouseDefault) Save() http.HandlerFunc {
 		}
 
 		// response
-		// - deserialize the seller to JSON
+		// - deserialize the warehouse to JSON
 		data := deserializeWarehouse(wh)
-		// - return the seller as JSON
-		response.JSON(w, http.StatusOK, Response{
+		// - return the warehouse as JSON
+		response.JSON(w, http.StatusCreated, Response{
 			Message: "success",
 			Data:    data,
 		})
@@ -346,9 +346,9 @@ func validateWarehouseFields(wh *internal.Warehouse) (err error) {
 	case wh.WarehouseCode == "":
 		return fmt.Errorf("%w: warehousecode", ErrRequiredField)
 	case wh.MinimumCapacity == 0:
-		return fmt.Errorf("%w: minimumcapacity", ErrRequiredField)
+		return fmt.Errorf("%w: minimum capacity", ErrRequiredField)
 	case wh.MinimumTemperature == 0:
-		return fmt.Errorf("%w: minimumtemperature", ErrRequiredField)
+		return fmt.Errorf("%w: minimum temperature", ErrRequiredField)
 	case wh.LocalityId == "":
 		return fmt.Errorf("%w: localityid", ErrRequiredField)
 	}

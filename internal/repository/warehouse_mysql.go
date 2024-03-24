@@ -23,7 +23,7 @@ func NewWarehouseMySQL(db *sql.DB) *WarehouseMySQL {
 
 // GetAll returns all Warehouses
 func (w *WarehouseMySQL) GetAll() (warehouses []internal.Warehouse, err error) {
-	query := "SELECT `id`, `cid`, `company_name`, `address`, `telephone`, `locality_id` FROM warehouses"
+	query := "SELECT `id`, `warehouse_code`, `address`, `telephone`, `minimum_capacity`, `minimum_temperature`, `locality_id` FROM warehouses"
 	rows, err := w.db.Query(query)
 	if err != nil {
 		switch err {
@@ -38,7 +38,7 @@ func (w *WarehouseMySQL) GetAll() (warehouses []internal.Warehouse, err error) {
 
 	for rows.Next() {
 		var w internal.Warehouse
-		err = rows.Scan()
+		err = rows.Scan(&w.ID, &w.WarehouseCode, &w.Address, &w.Telephone, &w.MinimumCapacity, &w.MinimumTemperature, &w.LocalityId)
 		if err != nil {
 			switch err {
 			case sql.ErrNoRows:
@@ -57,7 +57,7 @@ func (w *WarehouseMySQL) GetAll() (warehouses []internal.Warehouse, err error) {
 
 // Get returns a Warehouse by ID
 func (w *WarehouseMySQL) Get(id int) (wh internal.Warehouse, err error) {
-	query := "SELECT `id`, `cid`, `company_name`, `address`, `telephone`, `locality_id` FROM warehouses WHERE id = ?"
+	query := "SELECT `id`, `warehouse_code`, `address`, `telephone`, `minimum_capacity`, `minimum_temperature`, `locality_id` FROM warehouses WHERE id = ?"
 	row := w.db.QueryRow(query, id)
 
 	// scan the row and return the product

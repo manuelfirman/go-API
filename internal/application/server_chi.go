@@ -94,3 +94,21 @@ func buildProductsRouter(router *chi.Mux, db *sql.DB) {
 		r.Delete("/{id}", hd.Delete())
 	})
 }
+
+// *buildBuyersRouter builds the router for the buyers endpoints
+func buildBuyersRouter(router *chi.Mux, db *sql.DB) {
+	// instance dependences
+	rp := repository.NewBuyerMySQL(db)
+	sv := service.NewBuyerDefault(rp)
+	hd := handler.NewBuyerDefault(sv)
+
+	// define the routes of the buyers
+	router.Route("/api/v1/buyers", func(r chi.Router) {
+		// endpoints
+		r.Post("/", hd.Save())
+		r.Get("/", hd.GetAll())
+		r.Get("/{id}", hd.Get())
+		r.Patch("/{id}", hd.Update())
+		r.Delete("/{id}", hd.Delete())
+	})
+}

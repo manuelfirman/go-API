@@ -65,7 +65,7 @@ func (r *BuyerMySQL) Get(id int) (b internal.Buyer, err error) {
 }
 
 // Save receives a buyer and saves it
-func (r *repository) Save(b *internal.Buyer) (err error) {
+func (r *BuyerMySQL) Save(b *internal.Buyer) (err error) {
 	// execute the query
 	query := "INSERT INTO `buyers` (`card_number_id`, `first_name`, `last_name`) VALUES (?, ?, ?)"
 	result, err := r.db.Exec(query, b.CardNumberID, b.FirstName, b.LastName)
@@ -97,7 +97,7 @@ func (r *repository) Save(b *internal.Buyer) (err error) {
 }
 
 // Update receives a buyer and updates it. Returns an error if the buyer is not found.
-func (r *repository) Update(b *internal.Buyer) (err error) {
+func (r *BuyerMySQL) Update(b *internal.Buyer) (err error) {
 	// execute the query
 	query := "UPDATE `buyers` SET `card_number_id` = ?, `first_name` = ?, `last_name` = ? WHERE `id` = ?"
 	_, err = r.db.Exec(query, b.CardNumberID, b.FirstName, b.LastName, b.ID)
@@ -120,7 +120,7 @@ func (r *repository) Update(b *internal.Buyer) (err error) {
 }
 
 // Delete receives a buyer ID and deletes it. Returns an error if the buyer is not found.
-func (r *repository) Delete(id int) (err error) {
+func (r *BuyerMySQL) Delete(id int) (err error) {
 	// execute the query
 	query := "DELETE FROM `buyers` WHERE `id` = ?"
 	result, err := r.db.Exec(query, id)

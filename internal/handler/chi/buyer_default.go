@@ -15,10 +15,10 @@ import (
 )
 
 var (
-	// ErrBuyerHandlerMissingKey is the error returned when a required key is missing
-	ErrBuyerHandlerMissingKey = errors.New("missing key")
-	// ErrBuyerHandlerMissingField is the error returned when a required field is missing
-	ErrBuyerHandlerMissingField = errors.New("missing field")
+	// ErrHandlerMissingKey is the error returned when a required key is missing
+	ErrHandlerMissingKey = errors.New("missing key")
+	// ErrHandlerMissingField is the error returned when a required field is missing
+	ErrHandlerMissingField = errors.New("missing field")
 )
 
 // Response is a struct that contains the response message and data
@@ -176,10 +176,13 @@ func (h *BuyerDefault) Save() http.HandlerFunc {
 			return
 		}
 
+		// - serialize buyer to response
+		data := serializeBuyer(buyer)
+
 		// response
 		response.JSON(w, http.StatusCreated, Response{
 			Message: "success",
-			Data:    serializeBuyer(buyer),
+			Data:    data,
 		})
 	}
 }
@@ -316,11 +319,12 @@ func deserializeBuyer(b BuyerJSON) internal.Buyer {
 	}
 }
 
+// TODO: move these functions to a separate file
 // validateKeyExistance validates if the key exists in the map
 func validateKeyExistance(m map[string]any, keys ...string) error {
 	for _, k := range keys {
 		if _, ok := m[k]; !ok {
-			return fmt.Errorf("%w: %s not found", ErrBuyerHandlerMissingKey, k)
+			return fmt.Errorf("%w: %s not found", ErrHandlerMissingKey, k)
 		}
 	}
 
@@ -330,15 +334,15 @@ func validateKeyExistance(m map[string]any, keys ...string) error {
 // validateBuyerZeroValues validates if the buyer has zero values
 func validateBuyerZeroValues(b BuyerJSON) error {
 	if b.CardNumberID == 0 {
-		return fmt.Errorf("%w: card_number_id", ErrBuyerHandlerMissingKey)
+		return fmt.Errorf("%w: card_number_id", ErrHandlerMissingKey)
 	}
 
 	if b.FirstName == "" {
-		return fmt.Errorf("%w: first_name", ErrBuyerHandlerMissingKey)
+		return fmt.Errorf("%w: first_name", ErrHandlerMissingKey)
 	}
 
 	if b.LastName == "" {
-		return fmt.Errorf("%w: last_name", ErrBuyerHandlerMissingKey)
+		return fmt.Errorf("%w: last_name", ErrHandlerMissingKey)
 	}
 
 	return nil

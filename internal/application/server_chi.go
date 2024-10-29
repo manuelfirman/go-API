@@ -152,3 +152,21 @@ func buildWarehousesRouter(router *chi.Mux, db *sql.DB) {
 		r.Delete("/{id}", hd.Delete())
 	})
 }
+
+// *buildEmployeesRouter builds the router for the employees endpoints
+func buildEmployeesRouter(router *chi.Mux, db *sql.DB) {
+	// instance dependences
+	rp := repository.NewEmployeeMySQL(db)
+	sv := service.NewEmployeeDefault(rp)
+	hd := handler.NewEmployeeDefault(sv)
+
+	// define the routes of the employees
+	router.Route("/api/v1/employees", func(r chi.Router) {
+		// endpoints
+		r.Post("/", hd.Save())
+		r.Get("/", hd.GetAll())
+		r.Get("/{id}", hd.Get())
+		r.Patch("/{id}", hd.Update())
+		r.Delete("/{id}", hd.Delete())
+	})
+}

@@ -50,11 +50,6 @@ type SellerRequestJSON struct {
 	LocalityID string `json:"locality_id"`
 }
 
-type Response struct {
-	Message string `json:"message"`
-	Data    any    `json:"data"`
-}
-
 // NewProductDefault creates a new instance of the product handler
 func NewSellerDefault(sv internal.SellerService) *SellerDefault {
 	return &SellerDefault{

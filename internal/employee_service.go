@@ -11,6 +11,12 @@ var (
 	ErrEmployeeServiceNotNegativeField = errors.New("service: field can't be negative")
 	//ErrEmployeeServiceInternalError is returned when an internal error occurs
 	ErrEmployeeServiceInternalError = errors.New("service: internal error")
+	// ErrEmployeeServiceNotFound is returned when the employee is not found
+	ErrEmployeeServiceNotFound = errors.New("service: employee not found")
+	// ErrEmployeeService is returned when an internal error occurs
+	ErrEmployeeServiceUnknown = errors.New("service: unknown error")
+	// ErrEmployeeServiceDuplicated is returned when the employee already exists
+	ErrEmployeeServiceDuplicated = errors.New("service: employee already exists")
 )
 
 // EmployeeService is an interface that contains the methods that the employee service should support

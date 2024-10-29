@@ -13,6 +13,8 @@ var (
 	ErrBuyerService = errors.New("service: internal error")
 	//ErrBuyerServiceFK is returned when the buyer has purchase orders
 	ErrBuyerServiceFK = errors.New("service: buyer has purchase orders")
+	// ErrBuyerServiceUnkown is returned when the repository returns an unknown error (not defined in repository errors)
+	ErrBuyerServiceUnkown = errors.New("service: unknown error")
 )
 
 // BuyerService is an interface that contains the methods that the buyer service should support

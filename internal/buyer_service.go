@@ -18,9 +18,9 @@ var (
 // BuyerService is an interface that contains the methods that the buyer service should support
 type BuyerService interface {
 	// FindAll returns all the buyers
-	FindAll() ([]Buyer, error)
+	GetAll() ([]Buyer, error)
 	// FindByID returns the buyer with the given ID
-	FindByID(id int) (Buyer, error)
+	Get(id int) (Buyer, error)
 	// Save saves the given buyer
 	Save(buyer *Buyer) error
 	// Update updates the given buyer

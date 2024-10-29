@@ -26,12 +26,6 @@ func (w *WarehouseMySQL) GetAll() (warehouses []internal.Warehouse, err error) {
 	query := "SELECT `id`, `warehouse_code`, `address`, `telephone`, `minimum_capacity`, `minimum_temperature`, `locality_id` FROM warehouses"
 	rows, err := w.db.Query(query)
 	if err != nil {
-		switch err {
-		case sql.ErrNoRows:
-			err = internal.ErrWarehouseRepositoryNotFound
-		default:
-			err = internal.ErrWarehouseRepositoryUnknown
-		}
 		return
 	}
 	defer rows.Close()

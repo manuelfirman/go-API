@@ -40,6 +40,11 @@ func (r *BuyerMySQL) GetAll() (buyers []internal.Buyer, err error) {
 		buyers = append(buyers, buyer)
 	}
 
+	err = rows.Err()
+	if err != nil {
+		return
+	}
+
 	return
 }
 
@@ -84,14 +89,14 @@ func (r *BuyerMySQL) Save(b *internal.Buyer) (err error) {
 	}
 
 	// get the ID of the buyer saved
-	id, err := result.LastInsertId()
+	var id64 int64
+	id64, err = result.LastInsertId()
 	if err != nil {
-		err = internal.ErrBuyerRepository
 		return
 	}
 
 	// set the ID of the buyer
-	b.ID = int(id)
+	b.ID = int(id64)
 
 	return
 }

@@ -3,8 +3,8 @@ package internal
 import "errors"
 
 var (
-	// ErrEmployeesRepositoryNotFound is returned when the employees are not found
-	ErrEmployeesRepositoryNotFound = errors.New("repository: employees not found")
+	// ErrEmployeeRepository is returned when an internal error occurs
+	ErrEmployeeRepository = errors.New("repository: internal error")
 	// ErrEmployeeRepositoryNotFound is returned when the employee is not found
 	ErrEmployeeRepositoryNotFound = errors.New("repository: employee not found")
 	// ErrEmployeeRepositoryDuplicated is returned when the employee already exists

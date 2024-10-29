@@ -26,7 +26,7 @@ func (r *repository) GetAll() (products []internal.Product, err error) {
 	query := "SELECT * FROM products;"
 	rows, err := r.db.Query(query)
 	if err != nil {
-		return nil, err
+		return
 	}
 
 	// iterate over the rows and append the products
@@ -34,6 +34,12 @@ func (r *repository) GetAll() (products []internal.Product, err error) {
 		p := internal.Product{}
 		_ = rows.Scan(&p.ID, &p.ProductCode, &p.Description, &p.Height, &p.Length, &p.Width, &p.Weight, &p.ExpirationRate, &p.FreezingRate, &p.RecomFreezTemp, &p.ProductTypeID, &p.SellerID)
 		products = append(products, p)
+	}
+
+	// check for errors
+	err = rows.Err()
+	if err != nil {
+		return
 	}
 
 	return

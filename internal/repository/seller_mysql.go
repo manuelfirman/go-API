@@ -3,7 +3,6 @@ package repository
 import (
 	"database/sql"
 	"errors"
-	"fmt"
 
 	"github.com/go-sql-driver/mysql"
 	"github.com/manuelfirman/go-API/internal"
@@ -26,7 +25,7 @@ func NewSellerMySQL(db *sql.DB) *SellerMySQL {
 func (r *SellerMySQL) GetAll() (sellers []internal.Seller, err error) {
 	rows, err := r.db.Query("SELECT * FROM sellers")
 	if err != nil {
-		return nil, fmt.Errorf("error getting sellers: %w", err)
+		return
 	}
 	defer rows.Close()
 
@@ -44,6 +43,12 @@ func (r *SellerMySQL) GetAll() (sellers []internal.Seller, err error) {
 		}
 
 		sellers = append(sellers, s)
+	}
+
+	// check for errors
+	err = rows.Err()
+	if err != nil {
+		return
 	}
 
 	return

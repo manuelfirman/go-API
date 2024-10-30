@@ -15,11 +15,6 @@ import (
 	"github.com/manuelfirman/go-API/platform/web/response"
 )
 
-var (
-	// ErrRequiredField is the error returned when a required field is missing
-	ErrRequiredField = errors.New("required field")
-)
-
 // WarehouseJSON is the JSON representation of a warehouse
 type WarehouseJSON struct {
 	// Id is the identifier of the warehouse
@@ -337,20 +332,25 @@ func serializeWarehouse(w WarehouseJSON) internal.Warehouse {
 }
 
 // Validate zero values fields
-func validateWarehouseFields(wh *internal.Warehouse) (err error) {
-	switch {
-	case wh.Address == "":
-		return fmt.Errorf("%w: address", ErrRequiredField)
-	case wh.Telephone == "":
-		return fmt.Errorf("%w: telephone", ErrRequiredField)
-	case wh.WarehouseCode == "":
-		return fmt.Errorf("%w: warehousecode", ErrRequiredField)
-	case wh.MinimumCapacity == 0:
-		return fmt.Errorf("%w: minimum capacity", ErrRequiredField)
-	case wh.MinimumTemperature == 0:
-		return fmt.Errorf("%w: minimum temperature", ErrRequiredField)
-	case wh.LocalityId == "":
-		return fmt.Errorf("%w: localityid", ErrRequiredField)
+func validateWarehouseFields(wh *internal.Warehouse) error {
+	if wh.ID != 0 {
+		return ErrHandlerIdInRequest
 	}
+	if wh.Address == "" {
+		return fmt.Errorf("%w: address", ErrHandlerMissingField)
+	}
+	if wh.Telephone == "" {
+		return fmt.Errorf("%w: telephone", ErrHandlerMissingField)
+	}
+	if wh.WarehouseCode == "" {
+		return fmt.Errorf("%w: warehousecode", ErrHandlerMissingField)
+	}
+	if wh.MinimumCapacity == 0 {
+		return fmt.Errorf("%w: minimum capacity", ErrHandlerMissingField)
+	}
+	if wh.LocalityId == "" {
+		return fmt.Errorf("%w: localityid", ErrHandlerMissingField)
+	}
+
 	return nil
 }

@@ -14,19 +14,6 @@ import (
 	"github.com/manuelfirman/go-API/platform/web/response"
 )
 
-var (
-	// ErrHandlerMissingKey is the error returned when a required key is missing
-	ErrHandlerMissingKey = errors.New("missing key")
-	// ErrHandlerMissingField is the error returned when a required field is missing
-	ErrHandlerMissingField = errors.New("missing field")
-)
-
-// Response is a struct that contains the response message and data
-type Response struct {
-	Message string `json:"message"`
-	Data    any    `json:"data"`
-}
-
 // BuyerJSON is a struct that contains the buyer's information as JSON
 type BuyerJSON struct {
 	// ID is the unique identifier of the buyer
@@ -319,20 +306,13 @@ func deserializeBuyer(b BuyerJSON) internal.Buyer {
 	}
 }
 
-// TODO: move these functions to a separate file
-// validateKeyExistance validates if the key exists in the map
-func validateKeyExistance(m map[string]any, keys ...string) error {
-	for _, k := range keys {
-		if _, ok := m[k]; !ok {
-			return fmt.Errorf("%w: %s not found", ErrHandlerMissingKey, k)
-		}
-	}
-
-	return nil
-}
-
 // validateBuyerZeroValues validates if the buyer has zero values
 func validateBuyerZeroValues(b BuyerJSON) error {
+	// validate id
+	if b.ID != 0 {
+		return ErrHandlerIdInRequest
+	}
+
 	if b.CardNumberID == 0 {
 		return fmt.Errorf("%w: card_number_id", ErrHandlerMissingKey)
 	}

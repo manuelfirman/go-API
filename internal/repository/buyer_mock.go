@@ -26,14 +26,14 @@ func (m *BuyerMock) Get(id int) (internal.Buyer, error) {
 }
 
 // Save is a mocked method of the Buyer repository that returns a mocked result
-func (m *BuyerMock) Save(buyer internal.Buyer) error {
+func (m *BuyerMock) Save(buyer *internal.Buyer) error {
 	// Call the mocked method and return the mocked results
 	args := m.Called(buyer)
 	return args.Error(0)
 }
 
 // Update is a mocked method of the Buyer repository that returns a mocked result
-func (m *BuyerMock) Update(buyer internal.Buyer) error {
+func (m *BuyerMock) Update(buyer *internal.Buyer) error {
 	// Call the mocked method and return the mocked results
 	args := m.Called(buyer)
 	return args.Error(0)

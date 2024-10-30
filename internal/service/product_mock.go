@@ -1,17 +1,13 @@
-package repository
+package service
 
 import (
 	"github.com/manuelfirman/go-API/internal"
 	"github.com/stretchr/testify/mock"
 )
 
-// NewProductMock creates a new ProductMock
-func NewProductMock() *ProductMock {
-	return &ProductMock{}
-}
-
 // ProductMock is a mock type for the ProductRepository interface
 type ProductMock struct {
+	// Embedding the mock.Mock type allows us to call the Called method
 	mock.Mock
 }
 
@@ -21,13 +17,13 @@ func (m *ProductMock) GetAll() ([]internal.Product, error) {
 	return args.Get(0).([]internal.Product), args.Error(1)
 }
 
-// GetByID mocks the GetByID method
+// Get mocks the Get method
 func (m *ProductMock) Get(id int) (internal.Product, error) {
 	args := m.Called(id)
 	return args.Get(0).(internal.Product), args.Error(1)
 }
 
-// Save mocks the Create method
+// Save mocks the Save method
 func (m *ProductMock) Save(product *internal.Product) error {
 	args := m.Called(product)
 	return args.Error(0)

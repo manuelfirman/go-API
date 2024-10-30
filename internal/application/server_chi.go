@@ -64,17 +64,25 @@ func (s *ServerChi) Run() (err error) {
 
 	// - router
 	router := chi.NewRouter()
-	//   middlewares
+	// - middlewares
 	router.Use(middleware.Logger)
 	router.Use(middleware.Recoverer)
-	// endpoints
+	// - ping endpoint
+	buildPing(router)
 
+	// endpoints
 	// - products
 	buildProductsRouter(router, db)
 	// - sellers
 	buildSellersRouter(router, db)
+	// - buyers
+	buildBuyersRouter(router, db)
 	// - warehouses
 	buildWarehousesRouter(router, db)
+	// - employees
+	buildEmployeesRouter(router, db)
+	// - sections
+	buildSectionsRouter(router, db)
 
 	// run
 	err = http.ListenAndServe(s.addr, router)
@@ -168,5 +176,29 @@ func buildEmployeesRouter(router *chi.Mux, db *sql.DB) {
 		r.Get("/{id}", hd.Get())
 		r.Patch("/{id}", hd.Update())
 		r.Delete("/{id}", hd.Delete())
+	})
+}
+
+// *buildSectionsRouter builds the router for the sections endpoints
+func buildSectionsRouter(router *chi.Mux, db *sql.DB) {
+	// instance dependences
+	rp := repository.NewSectionMySQL(db)
+	sv := service.NewSectionDefault(rp)
+	hd := handler.NewSectionDefault(sv)
+
+	// define the routes of the sections
+	router.Route("/api/v1/sections", func(r chi.Router) {
+		// endpoints
+		r.Post("/", hd.Save())
+		r.Get("/", hd.GetAll())
+		r.Get("/{id}", hd.Get())
+		r.Patch("/{id}", hd.Update())
+		r.Delete("/{id}", hd.Delete())
+	})
+}
+
+func buildPing(router *chi.Mux) {
+	router.Get("/ping", func(w http.ResponseWriter, r *http.Request) {
+		w.Write([]byte("pong"))
 	})
 }

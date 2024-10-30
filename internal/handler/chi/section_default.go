@@ -250,6 +250,40 @@ func (h *SectionDefault) Update() http.HandlerFunc {
 	}
 }
 
+func (h *SectionDefault) Delete() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		// request
+		// - get id from url
+		id, err := strconv.Atoi(chi.URLParam(r, "id"))
+		if err != nil {
+			response.Error(w, http.StatusBadRequest, "invalid id")
+			return
+		}
+
+		// process
+		err = h.sv.Delete(id)
+		if err != nil {
+			switch {
+			case errors.Is(err, internal.ErrSectionServiceNotFound):
+				response.Error(w, http.StatusNotFound, "section not found")
+			case errors.Is(err, internal.ErrSectionService):
+				response.Error(w, http.StatusInternalServerError, "internal server error")
+			case errors.Is(err, internal.ErrSectionServiceUnkown):
+				response.Error(w, http.StatusInternalServerError, "unknown service error")
+			default:
+				response.Error(w, http.StatusInternalServerError, "unknown server error")
+			}
+
+			return
+		}
+
+		// response
+		response.JSON(w, http.StatusNoContent, Response{
+			Message: "success",
+		})
+	}
+}
+
 // serializeSection serializes a section into a SectionJSON
 func serializeSection(section internal.Section) SectionJSON {
 	return SectionJSON{

@@ -5,6 +5,12 @@ import (
 	"github.com/stretchr/testify/mock"
 )
 
+// NewSectionMock is a constructor for the SectionMock type
+func NewSectionMock() *SectionMock {
+	// Return the address of a new SectionMock struct
+	return &SectionMock{}
+}
+
 // SectionMock is a mock type for the Section repository
 type SectionMock struct {
 	// Embed the mock type to the SectionMock

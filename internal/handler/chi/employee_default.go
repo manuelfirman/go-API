@@ -303,25 +303,26 @@ func deserializeEmployee(e EmployeeJSON) internal.Employee {
 }
 
 // validateEmployee validates the employee fields
-func validateEmployeeZeroValues(e EmployeeJSON) (err error) {
+func validateEmployeeZeroValues(e EmployeeJSON) error {
+	// - validate id
+	if e.ID != 0 {
+		return ErrHandlerIdInRequest
+	}
+
 	if e.CardNumberID == 0 {
-		err = fmt.Errorf("%w: card_number_id", internal.ErrEmployeeServiceFieldRequired)
-		return
+		return fmt.Errorf("%w: card_number_id", internal.ErrEmployeeServiceFieldRequired)
 	}
 
 	if e.FirstName == "" {
-		err = fmt.Errorf("%w: first_name", internal.ErrEmployeeServiceFieldRequired)
-		return
+		return fmt.Errorf("%w: first_name", internal.ErrEmployeeServiceFieldRequired)
 	}
 
 	if e.LastName == "" {
-		err = fmt.Errorf("%w: last_name", internal.ErrEmployeeServiceFieldRequired)
-		return
+		return fmt.Errorf("%w: last_name", internal.ErrEmployeeServiceFieldRequired)
 	}
 
 	if e.WarehouseID == 0 {
-		err = fmt.Errorf("%w: warehouse_id", internal.ErrEmployeeServiceFieldRequired)
-		return
+		return fmt.Errorf("%w: warehouse_id", internal.ErrEmployeeServiceFieldRequired)
 	}
 
 	return nil

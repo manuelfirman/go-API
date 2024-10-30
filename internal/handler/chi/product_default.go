@@ -93,11 +93,6 @@ type ProductDefault struct {
 	sv internal.ProductService
 }
 
-var (
-	// ErrProductHandlerMissingField is the error returned when a required field is missing
-	ErrProductHandlerMissingField = errors.New("missing field")
-)
-
 // GetAll returns all products
 func (h *ProductDefault) GetAll() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -217,7 +212,7 @@ func (h *ProductDefault) Create() http.HandlerFunc {
 
 		// - validate required fields
 		p := serializeProduct(product)
-		err = validateProductMissingFields(&p)
+		err = validateProductZeroValues(&p)
 		if err != nil {
 			response.Error(w, http.StatusUnprocessableEntity, err.Error())
 			return
@@ -286,7 +281,7 @@ func (h *ProductDefault) Update() http.HandlerFunc {
 		updatedProduct := serializeProduct(productJSONData)
 		updatedProduct.ID = id
 		// - validate required fields
-		err = validateProductMissingFields(&updatedProduct)
+		err = validateProductZeroValues(&updatedProduct)
 		if err != nil {
 			response.Error(w, http.StatusUnprocessableEntity, err.Error())
 			return
@@ -442,38 +437,41 @@ func serializeProduct(p ProductJSON) internal.Product {
 // 	}
 // }
 
-// validateProductMissingFields validates if the product has fields in zero value
-func validateProductMissingFields(product *internal.Product) error {
+// validateProductZeroValues validates if the product has fields in zero value
+func validateProductZeroValues(product *internal.Product) error {
+	if product.ID != 0 {
+		return ErrHandlerIdInRequest
+	}
 	// Validate required fields
 	if product.ProductCode == "" {
-		return fmt.Errorf("%w: product_code", ErrProductHandlerMissingField)
+		return fmt.Errorf("%w: product_code", ErrHandlerMissingField)
 	}
 	if product.Description == "" {
-		return fmt.Errorf("%w: description", ErrProductHandlerMissingField)
+		return fmt.Errorf("%w: description", ErrHandlerMissingField)
 	}
 	if product.Height == 0 {
-		return fmt.Errorf("%w: height", ErrProductHandlerMissingField)
+		return fmt.Errorf("%w: height", ErrHandlerMissingField)
 	}
 	if product.Length == 0 {
-		return fmt.Errorf("%w: length", ErrProductHandlerMissingField)
+		return fmt.Errorf("%w: length", ErrHandlerMissingField)
 	}
 	if product.Width == 0 {
-		return fmt.Errorf("%w: width", ErrProductHandlerMissingField)
+		return fmt.Errorf("%w: width", ErrHandlerMissingField)
 	}
 	if product.Weight == 0 {
-		return fmt.Errorf("%w: netweight", ErrProductHandlerMissingField)
+		return fmt.Errorf("%w: netweight", ErrHandlerMissingField)
 	}
 	if product.ExpirationRate == 0 {
-		return fmt.Errorf("%w: expiration_rate", ErrProductHandlerMissingField)
+		return fmt.Errorf("%w: expiration_rate", ErrHandlerMissingField)
 	}
 	if product.FreezingRate == 0 {
-		return fmt.Errorf("%w: freezing_rate", ErrProductHandlerMissingField)
+		return fmt.Errorf("%w: freezing_rate", ErrHandlerMissingField)
 	}
 	if product.RecomFreezTemp == 0 {
-		return fmt.Errorf("%w: recommended_freezing_temperature", ErrProductHandlerMissingField)
+		return fmt.Errorf("%w: recommended_freezing_temperature", ErrHandlerMissingField)
 	}
 	if product.SellerID == 0 {
-		return fmt.Errorf("%w: seller_id", ErrProductHandlerMissingField)
+		return fmt.Errorf("%w: seller_id", ErrHandlerMissingField)
 	}
 
 	return nil

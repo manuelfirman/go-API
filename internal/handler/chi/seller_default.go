@@ -15,11 +15,6 @@ import (
 	"github.com/manuelfirman/go-API/platform/web/response"
 )
 
-var (
-	// ErrProductHandlerMissingField is the error returned when a required field is missing
-	ErrSellerHandlerMissingField = errors.New("missing field")
-)
-
 // SellerJSON is a struct that contains the seller's information as JSON
 type SellerJSON struct {
 	// ID is the unique identifier of the seller
@@ -337,22 +332,25 @@ func serializeSellerFromJSON(sellerJSON SellerJSON) (seller internal.Seller) {
 	return
 }
 
-func validateSellerFields(seller *internal.Seller) (err error) {
+func validateSellerFields(seller *internal.Seller) error {
+	if seller.ID != 0 {
+		return ErrHandlerIdInRequest
+	}
 	if seller.CID == 0 {
-		return fmt.Errorf("%w: CID", ErrSellerHandlerMissingField)
+		return fmt.Errorf("%w: CID", ErrHandlerMissingField)
 	}
 	if seller.CompanyName == "" {
-		return fmt.Errorf("%w: company name", ErrSellerHandlerMissingField)
+		return fmt.Errorf("%w: company name", ErrHandlerMissingField)
 	}
 	if seller.Address == "" {
-		return fmt.Errorf("%w: address", ErrSellerHandlerMissingField)
+		return fmt.Errorf("%w: address", ErrHandlerMissingField)
 	}
 	if seller.Telephone == "" {
-		return fmt.Errorf("%w: telephone", ErrSellerHandlerMissingField)
+		return fmt.Errorf("%w: telephone", ErrHandlerMissingField)
 	}
 	if seller.LocalityID == "" {
-		return fmt.Errorf("%w: locality id", ErrSellerHandlerMissingField)
+		return fmt.Errorf("%w: locality id", ErrHandlerMissingField)
 	}
-	return
 
+	return nil
 }

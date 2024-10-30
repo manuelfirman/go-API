@@ -1,4 +1,4 @@
-package repository
+package service
 
 import (
 	"github.com/manuelfirman/go-API/internal"
@@ -10,7 +10,7 @@ func NewSellerMock() *SellerMock {
 	return &SellerMock{}
 }
 
-// SellerMock is a mock for SellerRepository
+// SellerMock is a mock for SellerService
 type SellerMock struct {
 	// Embed the interface to ensure that the mock satisfies the interface
 	mock.Mock

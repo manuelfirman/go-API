@@ -1,4 +1,4 @@
-package repository
+package service
 
 import (
 	"github.com/manuelfirman/go-API/internal"
@@ -10,7 +10,7 @@ func NewWarehouseMock() *WarehouseMock {
 	return &WarehouseMock{}
 }
 
-// WarehouseMock is a mock for WarehouseRepository
+// WarehouseMock is a mock for WarehouseService
 type WarehouseMock struct {
 	// Embed the interface to ensure that the mock satisfies the interface
 	mock.Mock

@@ -15,6 +15,8 @@ var (
 	ErrSectionServiceFK = errors.New("service: section fk error")
 	// ErrSectionServiceUnkown is returned when the repository returns an unknown error (not defined in repository errors)
 	ErrSectionServiceUnkown = errors.New("service: unknown error")
+	// ErrSectionServiceInvalidField is returned when the field is invalid
+	ErrSectionServiceInvalidField = errors.New("service: invalid field")
 )
 
 // SectionService is an interface that contains the methods that the section service should support

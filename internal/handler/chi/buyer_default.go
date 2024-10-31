@@ -47,7 +47,7 @@ func (h *BuyerDefault) GetAll() http.HandlerFunc {
 			switch {
 			case errors.Is(err, internal.ErrBuyerService):
 				response.Error(w, http.StatusInternalServerError, "internal server error")
-			case errors.Is(err, internal.ErrBuyerServiceUnkown):
+			case errors.Is(err, internal.ErrBuyerServiceUnknown):
 				response.Error(w, http.StatusInternalServerError, "unknown service error")
 			default:
 				response.Error(w, http.StatusInternalServerError, "unknown server error")
@@ -89,7 +89,7 @@ func (h *BuyerDefault) Get() http.HandlerFunc {
 				response.Error(w, http.StatusNotFound, "buyer not found")
 			case errors.Is(err, internal.ErrBuyerService):
 				response.Error(w, http.StatusInternalServerError, "internal server error")
-			case errors.Is(err, internal.ErrBuyerServiceUnkown):
+			case errors.Is(err, internal.ErrBuyerServiceUnknown):
 				response.Error(w, http.StatusInternalServerError, "unknown service error")
 			default:
 				response.Error(w, http.StatusInternalServerError, "unknown server error")
@@ -154,7 +154,7 @@ func (h *BuyerDefault) Save() http.HandlerFunc {
 				response.Error(w, http.StatusConflict, "buyer already exists")
 			case errors.Is(err, internal.ErrBuyerService):
 				response.Error(w, http.StatusInternalServerError, "internal server error")
-			case errors.Is(err, internal.ErrBuyerServiceUnkown):
+			case errors.Is(err, internal.ErrBuyerServiceUnknown):
 				response.Error(w, http.StatusInternalServerError, "unknown service error")
 			default:
 				response.Error(w, http.StatusInternalServerError, "unknown server error")
@@ -194,7 +194,7 @@ func (h *BuyerDefault) Update() http.HandlerFunc {
 				response.Error(w, http.StatusNotFound, "buyer not found")
 			case errors.Is(err, internal.ErrBuyerService):
 				response.Error(w, http.StatusInternalServerError, "internal server error")
-			case errors.Is(err, internal.ErrBuyerServiceUnkown):
+			case errors.Is(err, internal.ErrBuyerServiceUnknown):
 				response.Error(w, http.StatusInternalServerError, "unknown service error")
 			default:
 				response.Error(w, http.StatusInternalServerError, "unknown server error")
@@ -228,7 +228,7 @@ func (h *BuyerDefault) Update() http.HandlerFunc {
 				response.Error(w, http.StatusNotFound, "buyer not found")
 			case errors.Is(err, internal.ErrBuyerService):
 				response.Error(w, http.StatusInternalServerError, "internal server error")
-			case errors.Is(err, internal.ErrBuyerServiceUnkown):
+			case errors.Is(err, internal.ErrBuyerServiceUnknown):
 				response.Error(w, http.StatusInternalServerError, "unknown service error")
 			default:
 				response.Error(w, http.StatusInternalServerError, "unknown server error")
@@ -270,7 +270,7 @@ func (h *BuyerDefault) Delete() http.HandlerFunc {
 				response.Error(w, http.StatusConflict, "buyer has purchase orders")
 			case errors.Is(err, internal.ErrBuyerService):
 				response.Error(w, http.StatusInternalServerError, "internal server error")
-			case errors.Is(err, internal.ErrBuyerServiceUnkown):
+			case errors.Is(err, internal.ErrBuyerServiceUnknown):
 				response.Error(w, http.StatusInternalServerError, "unknown service error")
 			default:
 				response.Error(w, http.StatusInternalServerError, "unknown server error")

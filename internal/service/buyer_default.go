@@ -27,7 +27,7 @@ func (s *BuyerDefault) GetAll() (buyers []internal.Buyer, err error) {
 		case internal.ErrBuyerRepository:
 			err = fmt.Errorf("%w: %v", internal.ErrBuyerService, err)
 		default:
-			err = fmt.Errorf("%w: %v", internal.ErrBuyerServiceUnkown, err)
+			err = fmt.Errorf("%w: %v", internal.ErrBuyerServiceUnknown, err)
 		}
 
 		return
@@ -46,7 +46,7 @@ func (s *BuyerDefault) Get(id int) (buyer internal.Buyer, err error) {
 		case internal.ErrBuyerRepository:
 			err = fmt.Errorf("%w: %v", internal.ErrBuyerService, err)
 		default:
-			err = fmt.Errorf("%w: %v", internal.ErrBuyerServiceUnkown, err)
+			err = fmt.Errorf("%w: %v", internal.ErrBuyerServiceUnknown, err)
 		}
 
 		return
@@ -71,7 +71,7 @@ func (s *BuyerDefault) Save(buyer *internal.Buyer) (err error) {
 		case internal.ErrBuyerRepository:
 			err = fmt.Errorf("%w: %v", internal.ErrBuyerService, err)
 		default:
-			err = fmt.Errorf("%w: %v", internal.ErrBuyerServiceUnkown, err)
+			err = fmt.Errorf("%w: %v", internal.ErrBuyerServiceUnknown, err)
 		}
 
 		return
@@ -96,7 +96,7 @@ func (s *BuyerDefault) Update(buyer *internal.Buyer) (err error) {
 		case internal.ErrBuyerRepository:
 			err = fmt.Errorf("%w: %v", internal.ErrBuyerService, err)
 		default:
-			err = fmt.Errorf("%w: %v", internal.ErrBuyerServiceUnkown, err)
+			err = fmt.Errorf("%w: %v", internal.ErrBuyerServiceUnknown, err)
 		}
 		return
 	}
@@ -116,7 +116,7 @@ func (s *BuyerDefault) Delete(id int) (err error) {
 		case internal.ErrBuyerRepository:
 			err = fmt.Errorf("%w: %v", internal.ErrBuyerService, err)
 		default:
-			err = fmt.Errorf("%w: %v", internal.ErrBuyerServiceUnkown, err)
+			err = fmt.Errorf("%w: %v", internal.ErrBuyerServiceUnknown, err)
 		}
 
 		return
@@ -128,13 +128,13 @@ func (s *BuyerDefault) Delete(id int) (err error) {
 // ValidateBuyer validates a buyer
 func ValidateBuyer(buyer *internal.Buyer) (err error) {
 	// - validate required fields
-	if (*buyer).CardNumberID >= 0 {
+	if (*buyer).CardNumberID <= 0 {
 		return fmt.Errorf("%w: card_number_id", internal.ErrBuyerServiceFieldRequired)
 	}
-	if (*buyer).FirstName == "" || len((*buyer).FirstName) > 3 {
+	if (*buyer).FirstName == "" || len((*buyer).FirstName) < 3 {
 		return fmt.Errorf("%w: first_name", internal.ErrBuyerServiceFieldRequired)
 	}
-	if (*buyer).LastName == "" || len((*buyer).LastName) > 3 {
+	if (*buyer).LastName == "" || len((*buyer).LastName) < 3 {
 		return fmt.Errorf("%w: last_name", internal.ErrBuyerServiceFieldRequired)
 	}
 

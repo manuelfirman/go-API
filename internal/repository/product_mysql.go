@@ -67,7 +67,7 @@ func (r *repository) Get(id int) (p internal.Product, err error) {
 }
 
 // Save receives a product and saves it. It returns the ID of the product saved.
-func (r *repository) Save(p *internal.Product) (id int, err error) {
+func (r *repository) Save(p *internal.Product) (err error) {
 	// set and prepare the query
 	query := "INSERT INTO `products` (`product_code`, `description`, `height`, `length`, `width`, `weight`, `expiration_rate`, `freezing_rate`, `recom_freez_temp`, `product_type_id`, `seller_id`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
 	result, err := r.db.Exec(query, (*p).ProductCode, (*p).Description, (*p).Height, (*p).Length, (*p).Width, (*p).Weight, (*p).ExpirationRate, (*p).FreezingRate, (*p).RecomFreezTemp, (*p).ProductTypeID, (*p).SellerID)
@@ -94,7 +94,7 @@ func (r *repository) Save(p *internal.Product) (id int, err error) {
 		return
 	}
 
-	id = int(id64)
+	(*p).ID = int(id64)
 
 	return
 }

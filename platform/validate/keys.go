@@ -1,4 +1,4 @@
-package handler
+package validate
 
 import (
 	"errors"
@@ -14,14 +14,8 @@ var (
 	ErrHandlerIdInRequest = errors.New("id in request")
 )
 
-// Response is a struct that contains the response message and data
-type Response struct {
-	Message string `json:"message"`
-	Data    any    `json:"data"`
-}
-
 // validateKeyExistance validates if the key exists in the map
-func validateKeyExistance(m map[string]any, keys ...string) error {
+func KeyExistance(m map[string]any, keys ...string) error {
 	for _, k := range keys {
 		if _, ok := m[k]; !ok {
 			return fmt.Errorf("%w: %s not found", ErrHandlerMissingKey, k)

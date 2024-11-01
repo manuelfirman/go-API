@@ -1,6 +1,10 @@
 package service
 
-import "github.com/manuelfirman/go-API/internal"
+import (
+	"fmt"
+
+	"github.com/manuelfirman/go-API/internal"
+)
 
 // NewProductDefault creates a new instance of the product service
 func NewProductDefault(rp internal.ProductRepository) *ProductDefault {
@@ -49,22 +53,19 @@ func (s *ProductDefault) Get(id int) (p internal.Product, err error) {
 }
 
 // Save receives a product and saves it. It returns the ID of the product saved.
-func (s *ProductDefault) Save(p *internal.Product) (prod internal.Product, err error) {
-	id, err := s.rp.Save(p)
+func (s *ProductDefault) Save(p *internal.Product) (err error) {
+	err = s.rp.Save(p)
 	if err != nil {
 		switch err {
 		case internal.ErrProductRepositoryDuplicated:
-			err = internal.ErrProductServiceDuplicated
-		case internal.ErrSellerRepositoryNotFound:
-			err = internal.ErrSellerServiceNotFound
+			err = fmt.Errorf("%w: %v", internal.ErrProductServiceDuplicated, err)
+		case internal.ErrProductRepositoryNotFound:
+			err = fmt.Errorf("%w: %v", internal.ErrProductServiceNotFound, err)
 		default:
-			err = internal.ErrProductServiceUnkown
+			err = fmt.Errorf("%w: %v", internal.ErrProductServiceUnkown, err)
 		}
 		return
 	}
-
-	p.ID = id
-	prod = *p
 
 	return
 }
@@ -75,13 +76,13 @@ func (s *ProductDefault) Update(p *internal.Product) (err error) {
 	if err != nil {
 		switch err {
 		case internal.ErrProductRepositoryNotFound:
-			err = internal.ErrProductServiceNotFound
+			err = fmt.Errorf("%w: %v", internal.ErrProductServiceNotFound, err)
 		case internal.ErrProductRepositoryDuplicated:
-			err = internal.ErrProductServiceDuplicated
+			err = fmt.Errorf("%w: %v", internal.ErrProductServiceDuplicated, err)
 		case internal.ErrProductRepositoryNothingToUpdate:
-			err = internal.ErrProductServiceNothingToUpdate
+			err = fmt.Errorf("%w: %v", internal.ErrProductServiceNothingToUpdate, err)
 		default:
-			err = internal.ErrProductServiceUnkown
+			err = fmt.Errorf("%w: %v", internal.ErrProductServiceUnkown, err)
 		}
 
 		return
@@ -96,11 +97,11 @@ func (s *ProductDefault) Delete(id int) (err error) {
 	if err != nil {
 		switch err {
 		case internal.ErrProductRepositoryNotFound:
-			err = internal.ErrProductServiceNotFound
+			err = fmt.Errorf("%w: %v", internal.ErrProductServiceNotFound, err)
 		case internal.ErrProductRepositoryForeignKey:
-			err = internal.ErrProductServiceForeignKey
+			err = fmt.Errorf("%w: %v", internal.ErrProductServiceForeignKey, err)
 		default:
-			err = internal.ErrProductServiceUnkown
+			err = fmt.Errorf("%w: %v", internal.ErrProductServiceUnkown, err)
 		}
 
 		return

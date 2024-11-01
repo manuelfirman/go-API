@@ -5,6 +5,12 @@ import (
 	"net/http"
 )
 
+// Res is a struct that contains the response message and data
+type Res struct {
+	Message string `json:"message"`
+	Data    any    `json:"data"`
+}
+
 // JSON writes json response
 func JSON(w http.ResponseWriter, code int, body any) {
 	// check body
@@ -12,7 +18,7 @@ func JSON(w http.ResponseWriter, code int, body any) {
 		w.WriteHeader(code)
 		return
 	}
-	
+
 	// marshal body
 	bytes, err := json.Marshal(body)
 	if err != nil {

@@ -80,7 +80,7 @@ func (h *SellerDefault) GetAll() http.HandlerFunc {
 		}
 
 		// Return the sellers as JSON
-		response.JSON(w, http.StatusOK, Response{
+		response.JSON(w, http.StatusOK, response.Res{
 			Message: "success",
 			Data:    sellersJSON,
 		})
@@ -115,7 +115,7 @@ func (h *SellerDefault) GetByID() http.HandlerFunc {
 		sellerJSON := deserializeSellerToJSON(seller)
 
 		// Return the seller as JSON
-		response.JSON(w, http.StatusOK, Response{
+		response.JSON(w, http.StatusOK, response.Res{
 			Message: "success",
 			Data:    sellerJSON,
 		})
@@ -193,7 +193,7 @@ func (h *SellerDefault) Create() http.HandlerFunc {
 		data := deserializeSellerToJSON(s)
 
 		// - return the seller as JSON
-		response.JSON(w, http.StatusOK, Response{
+		response.JSON(w, http.StatusOK, response.Res{
 			Message: "success",
 			Data:    data,
 		})
@@ -259,7 +259,7 @@ func (h *SellerDefault) Update() http.HandlerFunc {
 
 		// response
 		// - return the updated seller
-		response.JSON(w, http.StatusOK, Response{
+		response.JSON(w, http.StatusOK, response.Res{
 			Message: "success",
 			Data:    sellerJSONData,
 		})
@@ -293,7 +293,7 @@ func (h *SellerDefault) Delete() http.HandlerFunc {
 
 		// response
 		// - return a success message
-		response.JSON(w, http.StatusNoContent, Response{
+		response.JSON(w, http.StatusNoContent, response.Res{
 			Message: "success",
 		})
 	}
@@ -334,22 +334,22 @@ func serializeSellerFromJSON(sellerJSON SellerJSON) (seller internal.Seller) {
 
 func validateSellerFields(seller *internal.Seller) error {
 	if seller.ID != 0 {
-		return ErrHandlerIdInRequest
+		return validate.ErrHandlerIdInRequest
 	}
 	if seller.CID == 0 {
-		return fmt.Errorf("%w: CID", ErrHandlerMissingField)
+		return fmt.Errorf("%w: CID", validate.ErrHandlerMissingField)
 	}
 	if seller.CompanyName == "" {
-		return fmt.Errorf("%w: company name", ErrHandlerMissingField)
+		return fmt.Errorf("%w: company name", validate.ErrHandlerMissingField)
 	}
 	if seller.Address == "" {
-		return fmt.Errorf("%w: address", ErrHandlerMissingField)
+		return fmt.Errorf("%w: address", validate.ErrHandlerMissingField)
 	}
 	if seller.Telephone == "" {
-		return fmt.Errorf("%w: telephone", ErrHandlerMissingField)
+		return fmt.Errorf("%w: telephone", validate.ErrHandlerMissingField)
 	}
 	if seller.LocalityID == "" {
-		return fmt.Errorf("%w: locality id", ErrHandlerMissingField)
+		return fmt.Errorf("%w: locality id", validate.ErrHandlerMissingField)
 	}
 
 	return nil

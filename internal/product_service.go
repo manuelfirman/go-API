@@ -28,7 +28,7 @@ type ProductService interface {
 	// Get returns a product by ID.
 	Get(id int) (Product, error)
 	// Save saves a new product.
-	Save(p *Product) (Product, error)
+	Save(p *Product) error
 	// Update updates a product by ID.
 	Update(p *Product) error
 	// Delete deletes a product by ID.

@@ -10,6 +10,7 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/manuelfirman/go-API/internal"
+	"github.com/manuelfirman/go-API/platform/validate"
 	"github.com/manuelfirman/go-API/platform/web/request"
 	"github.com/manuelfirman/go-API/platform/web/response"
 )
@@ -62,7 +63,7 @@ func (h *BuyerDefault) GetAll() http.HandlerFunc {
 			data[i] = serializeBuyer(b)
 		}
 
-		response.JSON(w, http.StatusOK, Response{
+		response.JSON(w, http.StatusOK, response.Res{
 			Message: "success",
 			Data:    data,
 		})
@@ -101,7 +102,7 @@ func (h *BuyerDefault) Get() http.HandlerFunc {
 		data := serializeBuyer(buyer)
 
 		// response
-		response.JSON(w, http.StatusOK, Response{
+		response.JSON(w, http.StatusOK, response.Res{
 			Message: "success",
 			Data:    data,
 		})
@@ -126,7 +127,7 @@ func (h *BuyerDefault) Save() http.HandlerFunc {
 			return
 		}
 		// - validate the body keys
-		if err = validateKeyExistance(bodyMap, "card_number_id", "first_name", "last_name"); err != nil {
+		if err = validate.KeyExistance(bodyMap, "card_number_id", "first_name", "last_name"); err != nil {
 			response.Error(w, http.StatusBadRequest, err.Error())
 			return
 		}
@@ -167,7 +168,7 @@ func (h *BuyerDefault) Save() http.HandlerFunc {
 		data := serializeBuyer(buyer)
 
 		// response
-		response.JSON(w, http.StatusCreated, Response{
+		response.JSON(w, http.StatusCreated, response.Res{
 			Message: "success",
 			Data:    data,
 		})
@@ -241,7 +242,7 @@ func (h *BuyerDefault) Update() http.HandlerFunc {
 		data := serializeBuyer(buyer)
 
 		// response
-		response.JSON(w, http.StatusOK, Response{
+		response.JSON(w, http.StatusOK, response.Res{
 			Message: "success",
 			Data:    data,
 		})
@@ -279,7 +280,7 @@ func (h *BuyerDefault) Delete() http.HandlerFunc {
 		}
 
 		// response
-		response.JSON(w, http.StatusNoContent, Response{
+		response.JSON(w, http.StatusNoContent, response.Res{
 			Message: "success",
 			Data:    nil,
 		})
@@ -310,19 +311,19 @@ func deserializeBuyer(b BuyerJSON) internal.Buyer {
 func validateBuyerZeroValues(b BuyerJSON) error {
 	// validate id
 	if b.ID != 0 {
-		return ErrHandlerIdInRequest
+		return validate.ErrHandlerIdInRequest
 	}
 
 	if b.CardNumberID == 0 {
-		return fmt.Errorf("%w: card_number_id", ErrHandlerMissingKey)
+		return fmt.Errorf("%w: card_number_id", validate.ErrHandlerMissingKey)
 	}
 
 	if b.FirstName == "" {
-		return fmt.Errorf("%w: first_name", ErrHandlerMissingKey)
+		return fmt.Errorf("%w: first_name", validate.ErrHandlerMissingKey)
 	}
 
 	if b.LastName == "" {
-		return fmt.Errorf("%w: last_name", ErrHandlerMissingKey)
+		return fmt.Errorf("%w: last_name", validate.ErrHandlerMissingKey)
 	}
 
 	return nil

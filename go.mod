@@ -3,8 +3,9 @@ module github.com/manuelfirman/go-API
 go 1.21.6
 
 require (
+	github.com/DATA-DOG/go-txdb v0.2.0
 	github.com/go-chi/chi/v5 v5.0.12
-	github.com/go-sql-driver/mysql v1.8.0
+	github.com/go-sql-driver/mysql v1.8.1
 	github.com/stretchr/testify v1.9.0
 )
 

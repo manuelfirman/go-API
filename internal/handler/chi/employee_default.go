@@ -40,10 +40,10 @@ func (h *EmployeeDefault) GetAll() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		employees, err := h.sv.GetAll()
 		if err != nil {
-			switch err {
-			case internal.ErrEmployeeServiceInternalError:
+			switch {
+			case errors.Is(err, internal.ErrEmployeeServiceInternalError):
 				response.Error(w, http.StatusInternalServerError, "internal server error")
-			case internal.ErrEmployeeServiceUnknown:
+			case errors.Is(err, internal.ErrEmployeeServiceUnknown):
 				response.Error(w, http.StatusInternalServerError, "unknown service error")
 			default:
 				response.Error(w, http.StatusInternalServerError, "unknown server error")
@@ -79,12 +79,12 @@ func (h *EmployeeDefault) Get() http.HandlerFunc {
 		// - get employee by id
 		employee, err := h.sv.Get(id)
 		if err != nil {
-			switch err {
-			case internal.ErrEmployeeServiceNotFound:
+			switch {
+			case errors.Is(err, internal.ErrEmployeeServiceNotFound):
 				response.Error(w, http.StatusNotFound, "employee not found")
-			case internal.ErrEmployeeServiceInternalError:
+			case errors.Is(err, internal.ErrEmployeeServiceInternalError):
 				response.Error(w, http.StatusInternalServerError, "internal server error")
-			case internal.ErrEmployeeServiceUnknown:
+			case errors.Is(err, internal.ErrEmployeeServiceUnknown):
 				response.Error(w, http.StatusInternalServerError, "unknown service error")
 			default:
 				response.Error(w, http.StatusInternalServerError, "unknown server error")

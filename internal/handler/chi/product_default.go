@@ -44,32 +44,6 @@ type ProductJSON struct {
 	SellerID int `json:"seller_id"`
 }
 
-// ProductJSON is a struct that contains the product's information as JSON
-type ProductRequestJSON struct {
-	// ProductCode is the unique code of the product
-	ProductCode string `json:"product_code"`
-	// Description is the description of the product
-	Description string `json:"description"`
-	// Height is the height of the product
-	Height float64 `json:"height"`
-	// Length is the length of the product
-	Length float64 `json:"length"`
-	// Width is the width of the product
-	Width float64 `json:"width"`
-	// Weight is the weight of the product
-	Weight float64 `json:"netweight"`
-	// ExpirationRate is the rate at which the product expires
-	ExpirationRate float64 `json:"expiration_rate"`
-	// FreezingRate is the rate at which the product should be frozen
-	FreezingRate float64 `json:"freezing_rate"`
-	// RecomFreezTemp is the recommended freezing temperature for the product
-	RecomFreezTemp float64 `json:"recommended_freezing_temperature"`
-	// ProductTypeID is the unique identifier of the product type
-	ProductTypeID int `json:"product_type_id"`
-	// SellerID is the unique identifier of the seller
-	SellerID int `json:"seller_id"`
-}
-
 // ProductRecordReportJSON is a struct that contains the product record report information as JSON
 type ProductRecordReportJSON struct {
 	// ID is the unique identifier of the product record
@@ -111,16 +85,16 @@ func (h *ProductDefault) GetAll() http.HandlerFunc {
 
 		// response
 		// - serialize products
-		var productsResponseJSON []ProductJSON
+		var data []ProductJSON
 		for _, p := range products {
-			jsonData := deserializeProduct(p)
-			productsResponseJSON = append(productsResponseJSON, jsonData)
+			jsonData := serializeProduct(p)
+			data = append(data, jsonData)
 		}
 
-		// - return the products in JSON format
-		response.JSON(w, http.StatusOK, map[string]any{
-			"message": "products found",
-			"data":    productsResponseJSON,
+		// response
+		response.JSON(w, http.StatusOK, response.Res{
+			Message: "success",
+			Data:    data,
 		})
 	}
 }
@@ -150,13 +124,12 @@ func (h *ProductDefault) GetByID() http.HandlerFunc {
 			return
 		}
 
-		data := deserializeProduct(product)
+		data := serializeProduct(product)
 
 		//response
-		// -return the product in JSON format
-		response.JSON(w, http.StatusOK, map[string]any{
-			"message": "success",
-			"data":    data,
+		response.JSON(w, http.StatusOK, response.Res{
+			Message: "success",
+			Data:    data,
 		})
 	}
 }
@@ -181,38 +154,23 @@ func (h *ProductDefault) Create() http.HandlerFunc {
 		}
 
 		// - validate the body
-		productRequest := ProductRequestJSON{}
-		err = validate.CheckFieldExistance(productRequest, bodyMap)
+		var bodyRequest ProductJSON
+		err = validate.CheckFieldExistance(bodyRequest, bodyMap)
 		if err != nil {
 			response.Error(w, http.StatusBadRequest, "invalid body")
 			return
 		}
 
 		// - unmarshal the body
-		err = json.Unmarshal(body, &productRequest)
+		err = json.Unmarshal(body, &bodyRequest)
 		if err != nil {
 			response.Error(w, http.StatusBadRequest, "invalid body")
 			return
 		}
 
 		// - map the body to a product
-		product := ProductJSON{
-			ProductCode:    productRequest.ProductCode,
-			Description:    productRequest.Description,
-			Height:         productRequest.Height,
-			Length:         productRequest.Length,
-			Width:          productRequest.Width,
-			Weight:         productRequest.Weight,
-			ExpirationRate: productRequest.ExpirationRate,
-			FreezingRate:   productRequest.FreezingRate,
-			RecomFreezTemp: productRequest.RecomFreezTemp,
-			ProductTypeID:  productRequest.ProductTypeID,
-			SellerID:       productRequest.SellerID,
-		}
-
-		// - validate required fields
-		p := serializeProduct(product)
-		err = validateProductZeroValues(&p)
+		product := deserializeProduct(bodyRequest)
+		err = validateProductZeroValues(product)
 		if err != nil {
 			response.Error(w, http.StatusUnprocessableEntity, err.Error())
 			return
@@ -220,7 +178,7 @@ func (h *ProductDefault) Create() http.HandlerFunc {
 
 		// process
 		// - create a new product
-		p, err = h.sv.Save(&p)
+		err = h.sv.Save(&product)
 		if err != nil {
 			switch {
 			case errors.Is(err, internal.ErrProductServiceDuplicated):
@@ -234,13 +192,12 @@ func (h *ProductDefault) Create() http.HandlerFunc {
 		}
 
 		// - deserialize the product
-		data := deserializeProduct(p)
-		data.ID = p.ID
+		data := serializeProduct(product)
 
 		//response
-		response.JSON(w, http.StatusCreated, map[string]any{
-			"message": "success",
-			"data":    data,
+		response.JSON(w, http.StatusOK, response.Res{
+			Message: "success",
+			Data:    data,
 		})
 	}
 }
@@ -269,7 +226,7 @@ func (h *ProductDefault) Update() http.HandlerFunc {
 		}
 
 		// - deserialize to ProductJSON
-		productJSONData := deserializeProduct(p)
+		productJSONData := serializeProduct(p)
 
 		// - map JSON to productJSON
 		if err := request.JSON(r, &productJSONData); err != nil {
@@ -278,10 +235,10 @@ func (h *ProductDefault) Update() http.HandlerFunc {
 		}
 
 		// - serialize to internal product
-		updatedProduct := serializeProduct(productJSONData)
+		updatedProduct := deserializeProduct(productJSONData)
 		updatedProduct.ID = id
 		// - validate required fields
-		err = validateProductZeroValues(&updatedProduct)
+		err = validateProductZeroValues(updatedProduct)
 		if err != nil {
 			response.Error(w, http.StatusUnprocessableEntity, err.Error())
 			return
@@ -304,15 +261,13 @@ func (h *ProductDefault) Update() http.HandlerFunc {
 		}
 
 		// serialize to JSON
-		responseJSONData := deserializeProduct(updatedProduct)
+		data := serializeProduct(updatedProduct)
 
 		// response
-		response.JSON(w, http.StatusOK,
-			map[string]any{
-				"message": "product successfully updated",
-				"data":    responseJSONData,
-			},
-		)
+		response.JSON(w, http.StatusOK, response.Res{
+			Message: "success",
+			Data:    data,
+		})
 	}
 }
 
@@ -343,8 +298,9 @@ func (h *ProductDefault) Delete() http.HandlerFunc {
 		}
 
 		// response
-		response.JSON(w, http.StatusNoContent, map[string]any{
-			"message": "product successfully deleted",
+		response.JSON(w, http.StatusOK, response.Res{
+			Message: "success",
+			Data:    nil,
 		})
 	}
 }
@@ -393,8 +349,8 @@ func (h *ProductDefault) Delete() http.HandlerFunc {
 // 	}
 // }
 
-// deserializeProduct converts a internal Product to a ProductJSON
-func deserializeProduct(p internal.Product) ProductJSON {
+// serializeProduct converts a internal Product to a ProductJSON
+func serializeProduct(p internal.Product) ProductJSON {
 	return ProductJSON{
 		ID:             p.ID,
 		ProductCode:    p.ProductCode,
@@ -411,8 +367,8 @@ func deserializeProduct(p internal.Product) ProductJSON {
 	}
 }
 
-// serializeProduct converts a ProductJSON to a internal Product
-func serializeProduct(p ProductJSON) internal.Product {
+// deserializeProduct converts a ProductJSON to a internal Product
+func deserializeProduct(p ProductJSON) internal.Product {
 	return internal.Product{
 		ID:             p.ID,
 		ProductCode:    p.ProductCode,
@@ -438,40 +394,40 @@ func serializeProduct(p ProductJSON) internal.Product {
 // }
 
 // validateProductZeroValues validates if the product has fields in zero value
-func validateProductZeroValues(product *internal.Product) error {
+func validateProductZeroValues(product internal.Product) error {
 	if product.ID != 0 {
-		return ErrHandlerIdInRequest
+		return validate.ErrHandlerIdInRequest
 	}
 	// Validate required fields
 	if product.ProductCode == "" {
-		return fmt.Errorf("%w: product_code", ErrHandlerMissingField)
+		return fmt.Errorf("%w: product_code", validate.ErrHandlerMissingField)
 	}
 	if product.Description == "" {
-		return fmt.Errorf("%w: description", ErrHandlerMissingField)
+		return fmt.Errorf("%w: description", validate.ErrHandlerMissingField)
 	}
 	if product.Height == 0 {
-		return fmt.Errorf("%w: height", ErrHandlerMissingField)
+		return fmt.Errorf("%w: height", validate.ErrHandlerMissingField)
 	}
 	if product.Length == 0 {
-		return fmt.Errorf("%w: length", ErrHandlerMissingField)
+		return fmt.Errorf("%w: length", validate.ErrHandlerMissingField)
 	}
 	if product.Width == 0 {
-		return fmt.Errorf("%w: width", ErrHandlerMissingField)
+		return fmt.Errorf("%w: width", validate.ErrHandlerMissingField)
 	}
 	if product.Weight == 0 {
-		return fmt.Errorf("%w: netweight", ErrHandlerMissingField)
+		return fmt.Errorf("%w: netweight", validate.ErrHandlerMissingField)
 	}
 	if product.ExpirationRate == 0 {
-		return fmt.Errorf("%w: expiration_rate", ErrHandlerMissingField)
+		return fmt.Errorf("%w: expiration_rate", validate.ErrHandlerMissingField)
 	}
 	if product.FreezingRate == 0 {
-		return fmt.Errorf("%w: freezing_rate", ErrHandlerMissingField)
+		return fmt.Errorf("%w: freezing_rate", validate.ErrHandlerMissingField)
 	}
 	if product.RecomFreezTemp == 0 {
-		return fmt.Errorf("%w: recommended_freezing_temperature", ErrHandlerMissingField)
+		return fmt.Errorf("%w: recommended_freezing_temperature", validate.ErrHandlerMissingField)
 	}
 	if product.SellerID == 0 {
-		return fmt.Errorf("%w: seller_id", ErrHandlerMissingField)
+		return fmt.Errorf("%w: seller_id", validate.ErrHandlerMissingField)
 	}
 
 	return nil

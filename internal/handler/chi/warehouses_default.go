@@ -84,7 +84,7 @@ func (wd *WarehouseDefault) GetAll() http.HandlerFunc {
 		}
 
 		// - write the response
-		response.JSON(w, http.StatusOK, Response{
+		response.JSON(w, http.StatusOK, response.Res{
 			Message: "success",
 			Data:    data,
 		})
@@ -117,7 +117,7 @@ func (wd *WarehouseDefault) Get() http.HandlerFunc {
 		// - serialize the response
 		data := deserializeWarehouse(wh)
 		// - write the response
-		response.JSON(w, http.StatusOK, Response{
+		response.JSON(w, http.StatusOK, response.Res{
 			Message: "success",
 			Data:    data,
 		})
@@ -195,7 +195,7 @@ func (wd *WarehouseDefault) Save() http.HandlerFunc {
 		// - deserialize the warehouse to JSON
 		data := deserializeWarehouse(wh)
 		// - return the warehouse as JSON
-		response.JSON(w, http.StatusCreated, Response{
+		response.JSON(w, http.StatusCreated, response.Res{
 			Message: "success",
 			Data:    data,
 		})
@@ -264,7 +264,7 @@ func (wd *WarehouseDefault) Update() http.HandlerFunc {
 		// - deserialize the warehouse to JSON
 		data := deserializeWarehouse(wh)
 		// - return the warehouse as JSON
-		response.JSON(w, http.StatusOK, Response{
+		response.JSON(w, http.StatusOK, response.Res{
 			Message: "success",
 			Data:    data,
 		})
@@ -298,7 +298,7 @@ func (wd *WarehouseDefault) Delete() http.HandlerFunc {
 
 		// response
 		// - return the warehouse as JSON
-		response.JSON(w, http.StatusNoContent, Response{
+		response.JSON(w, http.StatusNoContent, response.Res{
 			Message: "success",
 			Data:    nil,
 		})
@@ -334,22 +334,22 @@ func serializeWarehouse(w WarehouseJSON) internal.Warehouse {
 // Validate zero values fields
 func validateWarehouseFields(wh *internal.Warehouse) error {
 	if wh.ID != 0 {
-		return ErrHandlerIdInRequest
+		return validate.ErrHandlerIdInRequest
 	}
 	if wh.Address == "" {
-		return fmt.Errorf("%w: address", ErrHandlerMissingField)
+		return fmt.Errorf("%w: address", validate.ErrHandlerMissingField)
 	}
 	if wh.Telephone == "" {
-		return fmt.Errorf("%w: telephone", ErrHandlerMissingField)
+		return fmt.Errorf("%w: telephone", validate.ErrHandlerMissingField)
 	}
 	if wh.WarehouseCode == "" {
-		return fmt.Errorf("%w: warehousecode", ErrHandlerMissingField)
+		return fmt.Errorf("%w: warehousecode", validate.ErrHandlerMissingField)
 	}
 	if wh.MinimumCapacity == 0 {
-		return fmt.Errorf("%w: minimum capacity", ErrHandlerMissingField)
+		return fmt.Errorf("%w: minimum capacity", validate.ErrHandlerMissingField)
 	}
 	if wh.LocalityId == "" {
-		return fmt.Errorf("%w: localityid", ErrHandlerMissingField)
+		return fmt.Errorf("%w: localityid", validate.ErrHandlerMissingField)
 	}
 
 	return nil

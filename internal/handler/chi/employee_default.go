@@ -10,6 +10,7 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/manuelfirman/go-API/internal"
+	"github.com/manuelfirman/go-API/platform/validate"
 	"github.com/manuelfirman/go-API/platform/web/request"
 	"github.com/manuelfirman/go-API/platform/web/response"
 )
@@ -56,7 +57,7 @@ func (h *EmployeeDefault) GetAll() http.HandlerFunc {
 			data[i] = serializeEmployee(v)
 		}
 
-		response.JSON(w, http.StatusOK, Response{
+		response.JSON(w, http.StatusOK, response.Res{
 			Message: "success",
 			Data:    data,
 		})
@@ -96,7 +97,7 @@ func (h *EmployeeDefault) Get() http.HandlerFunc {
 		data := serializeEmployee(employee)
 
 		// response
-		response.JSON(w, http.StatusOK, Response{
+		response.JSON(w, http.StatusOK, response.Res{
 			Message: "success",
 			Data:    data,
 		})
@@ -121,7 +122,7 @@ func (h *EmployeeDefault) Save() http.HandlerFunc {
 			return
 		}
 		// - validate the body keys
-		if err = validateKeyExistance(bodyMap, "card_number_id", "first_name", "last_name", "warehouse_id"); err != nil {
+		if err = validate.KeyExistance(bodyMap, "card_number_id", "first_name", "last_name", "warehouse_id"); err != nil {
 			response.Error(w, http.StatusBadRequest, err.Error())
 			return
 		}
@@ -162,7 +163,7 @@ func (h *EmployeeDefault) Save() http.HandlerFunc {
 		data := serializeEmployee(employee)
 
 		// response
-		response.JSON(w, http.StatusCreated, Response{
+		response.JSON(w, http.StatusCreated, response.Res{
 			Message: "success",
 			Data:    data,
 		})
@@ -235,7 +236,7 @@ func (h *EmployeeDefault) Update() http.HandlerFunc {
 		data := serializeEmployee(employee)
 
 		// response
-		response.JSON(w, http.StatusOK, Response{
+		response.JSON(w, http.StatusOK, response.Res{
 			Message: "success",
 			Data:    data,
 		})
@@ -272,7 +273,7 @@ func (h *EmployeeDefault) Delete() http.HandlerFunc {
 		}
 
 		// response
-		response.JSON(w, http.StatusNoContent, Response{
+		response.JSON(w, http.StatusNoContent, response.Res{
 			Message: "success",
 			Data:    nil,
 		})
@@ -306,7 +307,7 @@ func deserializeEmployee(e EmployeeJSON) internal.Employee {
 func validateEmployeeZeroValues(e EmployeeJSON) error {
 	// - validate id
 	if e.ID != 0 {
-		return ErrHandlerIdInRequest
+		return validate.ErrHandlerIdInRequest
 	}
 
 	if e.CardNumberID == 0 {

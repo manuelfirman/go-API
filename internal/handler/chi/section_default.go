@@ -10,6 +10,7 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/manuelfirman/go-API/internal"
+	"github.com/manuelfirman/go-API/platform/validate"
 	"github.com/manuelfirman/go-API/platform/web/request"
 	"github.com/manuelfirman/go-API/platform/web/response"
 )
@@ -68,7 +69,7 @@ func (h *SectionDefault) GetAll() http.HandlerFunc {
 			data[i] = serializeSection(section)
 		}
 		// return the response
-		response.JSON(w, http.StatusOK, Response{
+		response.JSON(w, http.StatusOK, response.Res{
 			Message: "success",
 			Data:    data,
 		})
@@ -106,7 +107,7 @@ func (h *SectionDefault) Get() http.HandlerFunc {
 		data := serializeSection(section)
 
 		// response
-		response.JSON(w, http.StatusOK, Response{
+		response.JSON(w, http.StatusOK, response.Res{
 			Message: "succes",
 			Data:    data,
 		})
@@ -129,7 +130,7 @@ func (h *SectionDefault) Save() http.HandlerFunc {
 			return
 		}
 		// - validate
-		if err = validateKeyExistance(bodyMap, "section_number", "current_temperature", "minimum_temperature", "current_capacity", "minimum_capacity", "maximum_capacity", "warehouse_id", "product_type_id"); err != nil {
+		if err = validate.KeyExistance(bodyMap, "section_number", "current_temperature", "minimum_temperature", "current_capacity", "minimum_capacity", "maximum_capacity", "warehouse_id", "product_type_id"); err != nil {
 			response.Error(w, http.StatusBadRequest, err.Error())
 			return
 		}
@@ -170,7 +171,7 @@ func (h *SectionDefault) Save() http.HandlerFunc {
 		data := serializeSection(section)
 
 		// response
-		response.JSON(w, http.StatusCreated, Response{
+		response.JSON(w, http.StatusCreated, response.Res{
 			Message: "success",
 			Data:    data,
 		})
@@ -243,7 +244,7 @@ func (h *SectionDefault) Update() http.HandlerFunc {
 		data := serializeSection(section)
 
 		// response
-		response.JSON(w, http.StatusOK, Response{
+		response.JSON(w, http.StatusOK, response.Res{
 			Message: "success",
 			Data:    data,
 		})
@@ -278,7 +279,7 @@ func (h *SectionDefault) Delete() http.HandlerFunc {
 		}
 
 		// response
-		response.JSON(w, http.StatusNoContent, Response{
+		response.JSON(w, http.StatusNoContent, response.Res{
 			Message: "success",
 		})
 	}
@@ -318,22 +319,22 @@ func deserializeSection(section SectionJSON) internal.Section {
 func validateSectionZeroValues(section SectionJSON) error {
 	// validate that id does has send in the request
 	if section.ID != 0 {
-		return fmt.Errorf("%w: %v", ErrHandlerMissingField, "id in request")
+		return fmt.Errorf("%w: %v", validate.ErrHandlerMissingField, "id in request")
 	}
 	if section.SectionNumber == 0 {
-		return fmt.Errorf("%w: %v", ErrHandlerMissingField, "section_number")
+		return fmt.Errorf("%w: %v", validate.ErrHandlerMissingField, "section_number")
 	}
 	if section.MinimumCapacity < 0 {
-		return fmt.Errorf("%w: %v", ErrHandlerMissingField, "minimum_capacity")
+		return fmt.Errorf("%w: %v", validate.ErrHandlerMissingField, "minimum_capacity")
 	}
 	if section.MaximumCapacity < 0 {
-		return fmt.Errorf("%w: %v", ErrHandlerMissingField, "maximum_capacity")
+		return fmt.Errorf("%w: %v", validate.ErrHandlerMissingField, "maximum_capacity")
 	}
 	if section.WarehouseID == 0 {
-		return fmt.Errorf("%w: %v", ErrHandlerMissingField, "warehouse_id")
+		return fmt.Errorf("%w: %v", validate.ErrHandlerMissingField, "warehouse_id")
 	}
 	if section.ProductTypeID == 0 {
-		return fmt.Errorf("%w: %v", ErrHandlerMissingField, "product_type_id")
+		return fmt.Errorf("%w: %v", validate.ErrHandlerMissingField, "product_type_id")
 	}
 
 	return nil

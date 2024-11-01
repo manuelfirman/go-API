@@ -65,7 +65,7 @@ func (s *EmployeeDefault) Save(employee *internal.Employee) (err error) {
 	if err != nil {
 		switch err {
 		case internal.ErrEmployeeRepositoryDuplicated:
-			err = fmt.Errorf("%w: %v", internal.ErrEmployeeServiceDuplicated, "card number id")
+			err = fmt.Errorf("%w: %v", internal.ErrEmployeeServiceDuplicated, err)
 		case internal.ErrEmployeeRepository:
 			err = fmt.Errorf("%w: %v", internal.ErrEmployeeServiceInternalError, err)
 		default:
@@ -134,8 +134,8 @@ func validateEmployee(employee *internal.Employee) (err error) {
 		return
 	}
 
-	if employee.WarehouseID < 0 {
-		err = fmt.Errorf("%w: %v", internal.ErrEmployeeServiceNotNegativeField, "warehouse id")
+	if employee.WarehouseID <= 0 {
+		err = fmt.Errorf("%w: %v", internal.ErrEmployeeServiceFieldRequired, "warehouse id")
 		return
 	}
 

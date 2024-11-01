@@ -133,6 +133,11 @@ func (h *EmployeeDefault) Save() http.HandlerFunc {
 			response.Error(w, http.StatusBadRequest, "invalid body: cannot unmarshal to struct")
 			return
 		}
+		// - validate the employee id
+		if err = ValidateEmployeeID(employeeJSON); err != nil {
+			response.Error(w, http.StatusBadRequest, err.Error())
+			return
+		}
 		// - validate the body values
 		if err = validateEmployeeZeroValues(employeeJSON); err != nil {
 			response.Error(w, http.StatusBadRequest, err.Error())
@@ -188,11 +193,11 @@ func (h *EmployeeDefault) Update() http.HandlerFunc {
 			case errors.Is(err, internal.ErrEmployeeServiceNotFound):
 				response.Error(w, http.StatusNotFound, "employee not found")
 			case errors.Is(err, internal.ErrEmployeeServiceInternalError):
-				response.Error(w, http.StatusInternalServerError, "internal server error")
+				response.Error(w, http.StatusInternalServerError, "get internal server error")
 			case errors.Is(err, internal.ErrEmployeeServiceUnknown):
-				response.Error(w, http.StatusInternalServerError, "unknown service error")
+				response.Error(w, http.StatusInternalServerError, "get unknown service error")
 			default:
-				response.Error(w, http.StatusInternalServerError, "unknown server error")
+				response.Error(w, http.StatusInternalServerError, "get unknown server error")
 			}
 
 			return
@@ -207,6 +212,8 @@ func (h *EmployeeDefault) Update() http.HandlerFunc {
 			return
 		}
 
+		employeeJSON.ID = id
+
 		// process
 		// - validate the employee
 		if err = validateEmployeeZeroValues(employeeJSON); err != nil {
@@ -219,8 +226,6 @@ func (h *EmployeeDefault) Update() http.HandlerFunc {
 		err = h.sv.Update(&employee)
 		if err != nil {
 			switch {
-			case errors.Is(err, internal.ErrEmployeeServiceDuplicated):
-				response.Error(w, http.StatusConflict, "employee already exists")
 			case errors.Is(err, internal.ErrEmployeeServiceInternalError):
 				response.Error(w, http.StatusInternalServerError, "internal server error")
 			case errors.Is(err, internal.ErrEmployeeServiceUnknown):
@@ -305,25 +310,28 @@ func deserializeEmployee(e EmployeeJSON) internal.Employee {
 
 // validateEmployee validates the employee fields
 func validateEmployeeZeroValues(e EmployeeJSON) error {
-	// - validate id
-	if e.ID != 0 {
-		return validate.ErrHandlerIdInRequest
-	}
-
-	if e.CardNumberID == 0 {
-		return fmt.Errorf("%w: card_number_id", internal.ErrEmployeeServiceFieldRequired)
+	if e.CardNumberID <= 0 {
+		return fmt.Errorf("%w: card_number_id", validate.ErrHandlerMissingField)
 	}
 
 	if e.FirstName == "" {
-		return fmt.Errorf("%w: first_name", internal.ErrEmployeeServiceFieldRequired)
+		return fmt.Errorf("%w: first_name", validate.ErrHandlerMissingField)
 	}
 
 	if e.LastName == "" {
-		return fmt.Errorf("%w: last_name", internal.ErrEmployeeServiceFieldRequired)
+		return fmt.Errorf("%w: last_name", validate.ErrHandlerMissingField)
 	}
 
-	if e.WarehouseID == 0 {
-		return fmt.Errorf("%w: warehouse_id", internal.ErrEmployeeServiceFieldRequired)
+	if e.WarehouseID <= 0 {
+		return fmt.Errorf("%w: warehouse_id", validate.ErrHandlerMissingField)
+	}
+
+	return nil
+}
+
+func ValidateEmployeeID(e EmployeeJSON) error {
+	if e.ID != 0 {
+		return validate.ErrHandlerIdInRequest
 	}
 
 	return nil
